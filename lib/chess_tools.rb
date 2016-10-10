@@ -1,0 +1,2 @@
+module ChessTools
+end
