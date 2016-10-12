@@ -42,15 +42,9 @@ class ChessBoard
 		puts ""
 	end
 
-	def piece_in_this(position)
-		identified_piece = ""
-		@board[position[0]].each_with_index { |x, i|  identified_piece = x if i == position[1] }
-		return identified_piece
-	end
-
 	def move_piece(from, to)
-		piece_from = get_coordinates(piece)
-		piece_to = get_coordinates(to)
+		piece_from = from.position #function from ChessTools
+		piece_to = to.position
 
 		if valid_move?(piece_from, piece_to)
 			@board[piece_from[0]][piece_from[1]], @board[piece_to[0]][piece_to[1]] = @board[piece_to[0]][piece_to[1]], @board[piece_from[0]][piece_from[1]]
@@ -59,33 +53,52 @@ class ChessBoard
 		end
 	end
 
-	def get_coordinates(grid_code)
-		array_coordinate = grid_code.position #function from ChessTools
+	def identify_piece_in(position)
+		identified_piece = ""
+		@board[position[0]].each_with_index { |x, i|  identified_piece = x if i == position[1] }
+		return identified_piece
 	end
 
 	def valid_move?(piece, to)
-		piece_from = get_coordinates(piece)
-		piece_to = get_coordinates(to)
-		which_piece = ""
-		@board[piece_from[0]].each_with_index { |x, i|  which_piece = x if i == piece_from[1] }
+		piece_from = piece.position
+		piece_to = to.position
+		directions = []
 
-		case which_piece
+		case identify_piece_in(piece_from)
 		when "\u2658", "\u265e" 
-			return true if knight_possible_moves(piece_from).include?(piece_to)
-		when "\u2657", "\u265d" 
-			return true if bishop_possible_moves(piece_from).include?(piece_to)
+			if knight_possible_moves(piece_from).include?(piece_to)
+				directions = knight_possible_moves(piece_from)
+			end
+		when "\u2657", "\u265d"
+			if bishop_possible_moves(piece_from).include?(piece_to)
+				bishop_possible_moves(piece_from).each { |x| directions << x if bishop_possible_moves(piece_to).include?(x) }
+			end
 		when "\u2656", "\u265c" 
-			return true if rook_possible_moves(piece_from).include?(piece_to)
+			if rook_possible_moves(piece_from).include?(piece_to)
+				rook_possible_moves(piece_from).each { |x| directions << directions if rook_possible_moves(piece_to).include?(x) }
+			end
 		when "\u2655", "\u265b" 
-			return true if queen_possible_moves(piece_from).include?(piece_to)
+			if queen_possible_moves(piece_from).include?(piece_to)
+				queen_possible_moves(piece_from).each { |x| directions << directions if queen_possible_moves(piece_to).include?(x) }
+			end
 		when "\u2654", "\u265a"
-			return true if king_possible_moves(piece_from).include?(piece_to)
+			if king_possible_moves(piece_from).include?(piece_to)
+				directions = king_possible_moves(piece_from)
+			end
 		when "\u2659", "\u265f"
-			return true if pawn_possible_moves(piece_from).include?(piece_to)
+			if pawn_possible_moves(piece_from).include?(piece_to)
+			end
 		end
-		return false
+		return directions
 	end
 
+	def friendly_blocking?(path)
+
+	end
+
+	def enemy_there?(destination)
+
+	end
 
 	def knight_possible_moves(position)
 		directions = [[-1, 1],[-2, 2]] #2 pairs of numbers that make up the combinations of the way knight moves.
@@ -97,7 +110,11 @@ class ChessBoard
 		return possible_ones
 	end
 
-	def pawn_possible_moves(position)
+	def white_pawn_possible_moves(position)
+
+	end
+
+	def black_pawn_possible_moves(position)
 
 	end
 
@@ -121,6 +138,7 @@ class ChessBoard
 		end
 		return possible_ones
 	end
+
 	def rook_possible_moves(position)
 		possible_ones = []
 		0.upto(7) { |x| possible_ones << [x, position[1]]; possible_ones << [position[0], x]}
