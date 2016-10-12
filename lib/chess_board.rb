@@ -4,41 +4,21 @@ include ChessTools
 class ChessBoard	
 	attr_reader :board
 
-	def initialize
+	def initialize			#rook 		#knight 	#bishop 	#queen 		#king 		#bishop 	#knight  	#rook
+		@white_pieces = ["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2657", "\u2658", "\u2656"]
+		@black_pieces = ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]
 		@board = populate_board
-		@grid_guide = ["a", "b", "c", "d", "e", "f", "g", "h"]
-	end
-
-	def move_piece(from, to)
-	end
-
-	def valid_move?(piece, to)
-		piece_from = get_coordinates(piece)
-		piece_to = get_coordinates(to)
-		which_piece = ""
-		@board[piece_from[0]].each_with_index { |x, i|  which_piece = x if i == piece_from[1] }
-		case which_piece
-		when "\u2658", "\u265e"
-			return true if knight_possible_moves(piece_from).include?(piece_to)
-		else
-			return false
-		end
-		return false
-	end
-
-	def get_coordinates(grid_code)
-		array_coordinate = grid_code.position #function from ChessTools
 	end
 
 	def populate_board
-		@board = [["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2657", "\u2658", "\u2656"], 
-							Array.new(8, "\u2610"), 
-							Array.new(8, "\u2610"), 
-							Array.new(8, "\u2610"), 
-							Array.new(8, "\u2610"), 
-							Array.new(8, "\u2610"), 
-							Array.new(8, "\u2610"), 
-							["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]]
+		@board = [@white_pieces, 					#row 0
+							Array.new(8, "\u2610"), #row 1
+							Array.new(8, "\u2610"), #row 2
+							Array.new(8, "\u2610"), #row 3
+							Array.new(8, "\u2610"), #row 4
+							Array.new(8, "\u2610"), #row 5
+							Array.new(8, "\u2610"), #row 6
+							@black_pieces]					#row 7
 
 		@board.each_with_index { |row, i| 
 		case i
@@ -58,9 +38,54 @@ class ChessBoard
 	end
 
 	def print_guide
-		@grid_guide.each { |x| print "    #{x}" }
+		("a".."h").each { |x| print "    #{x}" }
 		puts ""
 	end
+
+	def piece_in_this(position)
+		identified_piece = ""
+		@board[position[0]].each_with_index { |x, i|  identified_piece = x if i == position[1] }
+		return identified_piece
+	end
+
+	def move_piece(from, to)
+		piece_from = get_coordinates(piece)
+		piece_to = get_coordinates(to)
+
+		if valid_move?(piece_from, piece_to)
+			@board[piece_from[0]][piece_from[1]], @board[piece_to[0]][piece_to[1]] = @board[piece_to[0]][piece_to[1]], @board[piece_from[0]][piece_from[1]]
+		else
+			puts "Invalid Move!"
+		end
+	end
+
+	def get_coordinates(grid_code)
+		array_coordinate = grid_code.position #function from ChessTools
+	end
+
+	def valid_move?(piece, to)
+		piece_from = get_coordinates(piece)
+		piece_to = get_coordinates(to)
+		which_piece = ""
+		@board[piece_from[0]].each_with_index { |x, i|  which_piece = x if i == piece_from[1] }
+
+		case which_piece
+		when "\u2658", "\u265e" 
+			return true if knight_possible_moves(piece_from).include?(piece_to)
+		when "\u2657", "\u265d" 
+			return true if bishop_possible_moves(piece_from).include?(piece_to)
+		when "\u2656", "\u265c" 
+			return true if rook_possible_moves(piece_from).include?(piece_to)
+		when "\u2655", "\u265b" 
+			return true if queen_possible_moves(piece_from).include?(piece_to)
+		when "\u2654", "\u265a"
+			return true if king_possible_moves(piece_from).include?(piece_to)
+		when "\u2659", "\u265f"
+			return true if pawn_possible_moves(piece_from).include?(piece_to)
+		end
+		return false
+	end
+
 
 	def knight_possible_moves(position)
 		directions = [[-1, 1],[-2, 2]] #2 pairs of numbers that make up the combinations of the way knight moves.
@@ -70,6 +95,50 @@ class ChessBoard
 		directions[1].each { |j| directions[0].each{|i| moves << [position[0]+j,position[1]+i] }} #Generates the remaining 4 combination
 		moves.each { |x| possible_ones << x unless (x[0] < 0 || x[1] < 0) || (x[0] > 7 || x[1] > 7) } #Discards the moves that go off the board.
 		return possible_ones
+	end
+
+	def pawn_possible_moves(position)
+
+	end
+
+	def bishop_possible_moves(position)
+		row_u = position[0]
+		row_d = position[0]
+		indexr = position[1]
+		indexl = position[1]
+		possible_ones = []
+		counter = 0
+		while counter < 8
+			row_u += 1
+			row_d -= 1
+			indexr += 1
+			indexl -= 1
+			possible_ones << [row_u, indexr] unless row_u > 8 || indexr > 7
+			possible_ones << [row_u, indexl] unless row_u > 8 || indexl < 0
+			possible_ones << [row_d, indexr] unless row_d < 0 || indexr > 7
+			possible_ones << [row_d, indexl] unless row_d < 0 || indexl < 0
+ 			counter += 1
+		end
+		return possible_ones
+	end
+	def rook_possible_moves(position)
+		possible_ones = []
+		0.upto(7) { |x| possible_ones << [x, position[1]]; possible_ones << [position[0], x]}
+		return possible_ones
+	end
+
+	def queen_possible_moves(position)
+		possible_ones = rook_possible_moves(position) + bishop_possible_moves(position)
+	end
+
+	def king_possible_moves(position)
+		row = position[0]
+		column = position[1]
+		possible_ones = []
+		possible_ones << [row, column + 1] unless column > 7
+		possible_ones << [row, column - 1] unless column < 0
+		possible_ones << [row + 1, column] unless row > 7
+		possible_ones << [row - 1, column] unless row < 0
 	end
 end
 

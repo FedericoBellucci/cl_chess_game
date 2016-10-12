@@ -7,6 +7,4 @@ module ChessTools
 		placement.each_with_index { |x, i| coordinate[0] = i if coordinate[0] == x }
 		coordinate[0], coordinate[1] = coordinate[1], coordinate[0]
 	end
-
-
 end

@@ -52,5 +52,4 @@ class ChessGame
 		puts "	GOOD LUCK! "
 	end
 end
-
 ChessGame.new
