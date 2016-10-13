@@ -67,6 +67,7 @@ class ChessBoard
 	def identify_piece_in(position)
 		piece = @board[position[0]][position[1]]
 	end
+#TODO: implement kill tracker of pieces eaten, check, checkmate and promotion
 
 private
 
@@ -254,7 +255,7 @@ private
 		when "\u2656", "\u265c" 
 			return rook_possible_moves(position, 1)
 		when "\u2655", "\u265b" 
-			return queen_possible_moves(position, 1)
+			return queen_possible_moves(position, false)
 		when "\u2654", "\u265a"
 			return king_possible_moves(position, 1)
 		when "\u265f", "\u2659" #black pawn
