@@ -6,50 +6,38 @@ describe ChessBoard do
 	it { expect(chess.board).to be_kind_of(Array) }
 	it { expect{ chess.show_board }.to output.to_stdout }
 
-	describe "#valid_move" do
-		context "moving the knight from [b1] to [c3] returns true" do
-			it {expect(chess.valid_move?("b1","c3")).to be_an(Array)}
-		end
-		context "moving the knight from [b1] to [c4] returns false" do
-			it {expect(chess.valid_move?("b1", "c4")).to be_empty}
-		end
-		context "moving the bishop from [c1] to [h6] returns true" do
-			it {expect(chess.valid_move?("c1", "h6")).to be_an(Array) }
-		end
-		context "moving the bishop from [c1] to [c3] returns false" do
-			it {expect(chess.valid_move?("c1", "c3")).to be_empty}
-		end
-		context "moving the rook from [a1] to [a4] returns true" do
-			it {expect(chess.valid_move?("a1", "a4")).to be_an(Array)}
-		end
-		context "moving the rook from [a1] to [b4] returns false" do
-			it {expect(chess.valid_move?("a1", "b4")).to be_empty}
-		end
-		context "moving queen from [d1] to [d4] returns true" do
-			it {expect(chess.valid_move?("d1", "d4")).to be_an(Array)}
-		end
-		context "moving queen from [d1] to [e2] returns true" do
-			it {expect(chess.valid_move?("d1", "e2")).to be_an(Array)}
-		end
-		context "moving queen from [d1] to [e3] returns false" do
-			it {expect(chess.valid_move?("d1", "e3")).to be_empty}
-		end
-		context "moving king from [e1] to [e2] returns true" do
-			it {expect(chess.valid_move?("e1", "e2")).to be_an(Array) }
-		end
-		context "moving king from [e1] to [d2] returns false" do
-			it {expect(chess.valid_move?("e1", "d2")).to be_empty}
-		end
-	end
-	
 	describe "#move_piece" do
-		context "Moving a pawn first time should move two steps foward" do
+		context "moving knight from [b1] to [c3], c3 should be knight b1 should be empty square" do
+			before do
+				chess.move_piece("w" ,"b1", "c3")
+			end
+			it { expect(chess.board[2][2]).to eql("\u2658") }
+			it { expect(chess.board[0][1]).to eql("\u2610") }
 		end
-		context "Pawn moves one step foward" do
+		context "moving pawn from [a7] to [a5] moves pawn" do
+			before do
+				chess.move_piece("b", "a7", "a5")
+			end
+			it { expect(chess.board[4][0]).to eql("\u265f")}
+			it { expect(chess.board[6][0]).to eql("\u2610")}
 		end
-		context "Knight moves two steps foward one step right" do
+		context "moving rook from [a1] to [a3] returns false" do
+			it {expect(chess.move_piece("w", "a1", "a3")).to be false }
 		end
-		context "Bishop moves diagonally" do
+		context "returns false if white turns tries to move black piece" do
+			it { expect(chess.move_piece("w", "a7", "a5")).to be false }
+		end
+		context "returns false if black turn tries to move white piece" do
+			it { expect(chess.move_piece("b", "a2", "a3")).to be false }
+		end
+		context "returns false if space requested is empty" do
+			it { expect(chess.move_piece('w', "a4", "a5")).to be false}
 		end
 	end
 end
+
+
+
+
+
+

@@ -7,19 +7,35 @@ class ChessGame
 		@players = whos_playing?
 		@board = ChessBoard.new
 		@turn = 0
+		@hor_guide = ("a".."h").to_a
+		@ver_guide = ("1".."8").to_a
 		instructions
-		play
 	end
 
-	def play
+	def board
 		@board.show_board
-		puts "** It is #{@players[@turn].name}'s turn **"
-		print "Choose the piece you wish to move: "
-		piece_from = gets.strip
-		print "\nChoose destination: "
-		piece_to = gets.strip
-		@turn == 0 ? @turn = 1 : @turn = 0
 		play
+	end
+	def play
+		piece_from = ""
+		piece_to = ""
+		puts "** It is #{@players[@turn].name}'s turn **"
+		begin
+			print "Choose the piece you wish to move: "
+			piece_from = gets.strip
+		end until @hor_guide.include?(piece_from[0]) && @ver_guide.include?(piece_from[1])
+
+		begin
+			print "Choose destination: "
+			piece_to = gets.chomp
+		end until @hor_guide.include?(piece_to[0]) && @ver_guide.include?(piece_to[1])
+		puts "#{@players[@turn].color}"
+		if @board.move_piece(@players[@turn].color, piece_from, piece_to)
+			@turn == 0 ? @turn = 1 : @turn = 0
+		else
+			puts "Invalid move"
+		end
+		board
 	end
 
 	def whos_playing?
@@ -50,6 +66,7 @@ class ChessGame
 		puts "* The player must choose a valid piece to move considering the grid (e.g. 'a2')"
 		puts "* The player must then choose where he wished to move that piece (e.g. 'a3')"
 		puts "	GOOD LUCK! "
+		board
 	end
 end
 ChessGame.new

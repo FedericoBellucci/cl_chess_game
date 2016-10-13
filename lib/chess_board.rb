@@ -8,17 +8,19 @@ class ChessBoard
 		@white_pieces = ["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2657", "\u2658", "\u2656"]
 		@black_pieces = ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]
 		@board = populate_board
+		@check = false
+		@checkmate = false
 	end
 
 	def populate_board
-		@board = [@white_pieces, 					#row 0
+		@board = [["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2657", "\u2658", "\u2656"], 					#row 0
 							Array.new(8, "\u2610"), #row 1
 							Array.new(8, "\u2610"), #row 2
 							Array.new(8, "\u2610"), #row 3
 							Array.new(8, "\u2610"), #row 4
 							Array.new(8, "\u2610"), #row 5
 							Array.new(8, "\u2610"), #row 6
-							@black_pieces]					#row 7
+							["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]]					#row 7
 
 		@board.each_with_index { |row, i| 
 		case i
@@ -42,111 +44,168 @@ class ChessBoard
 		puts ""
 	end
 
-	def move_piece(from, to)
+	def move_piece(turn, from, to)
 		piece_from = from.position #function from ChessTools
 		piece_to = to.position
-
-		if valid_move?(piece_from, piece_to)
-			@board[piece_from[0]][piece_from[1]], @board[piece_to[0]][piece_to[1]] = @board[piece_to[0]][piece_to[1]], @board[piece_from[0]][piece_from[1]]
+		piece = identify_piece_in(piece_from)
+		return false if (turn == "w") && (@black_pieces.include?(piece) || piece == "\u265f")
+		return false if (turn == "b") && (@white_pieces.include?(piece) || piece == "\u2659")
+		return false if piece == "\u2610"
+		if valid_move?(piece_from, piece_to, turn)
+			if enemy_there?(piece_to, turn)
+				@board[piece_to[0]][piece_to[1]] = @board[piece_from[0]][piece_from[1]]
+				@board[piece_from[0]][piece_from[1]] = "\u2610"
+			else
+				@board[piece_from[0]][piece_from[1]], @board[piece_to[0]][piece_to[1]] = @board[piece_to[0]][piece_to[1]], @board[piece_from[0]][piece_from[1]]
+			end
+			return true
 		else
-			puts "Invalid Move!"
+			return false
 		end
 	end
 
 	def identify_piece_in(position)
-		identified_piece = ""
-		@board[position[0]].each_with_index { |x, i|  identified_piece = x if i == position[1] }
-		return identified_piece
+		piece = @board[position[0]][position[1]]
 	end
 
-	def valid_move?(piece, to)
-		piece_from = piece.position
-		piece_to = to.position
+private
+
+	def complete_path(piece_from, piece_to)
 		directions = []
 
 		case identify_piece_in(piece_from)
 		when "\u2658", "\u265e" 
-			if knight_possible_moves(piece_from).include?(piece_to)
-				directions = knight_possible_moves(piece_from)
+			if knight_possible_moves(piece_from).include?(piece_to) 
+				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2657", "\u265d"
 			if bishop_possible_moves(piece_from).include?(piece_to)
-				bishop_possible_moves(piece_from).each { |x| directions << x if bishop_possible_moves(piece_to).include?(x) }
+				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2656", "\u265c" 
 			if rook_possible_moves(piece_from).include?(piece_to)
-				rook_possible_moves(piece_from).each { |x| directions << directions if rook_possible_moves(piece_to).include?(x) }
+				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2655", "\u265b" 
 			if queen_possible_moves(piece_from).include?(piece_to)
-				queen_possible_moves(piece_from).each { |x| directions << directions if queen_possible_moves(piece_to).include?(x) }
+				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2654", "\u265a"
 			if king_possible_moves(piece_from).include?(piece_to)
 				directions = king_possible_moves(piece_from)
 			end
-		when "\u2659", "\u265f"
+		when "\u2659", "\u265f" #pawns
 			if pawn_possible_moves(piece_from).include?(piece_to)
+				directions = pawn_possible_moves(piece_from)
 			end
 		end
 		return directions
 	end
 
-	def friendly_blocking?(path)
-
+	def valid_move?(piece_from, piece_to, turn)
+		path = complete_path(piece_from, piece_to)
+		unless path.empty?
+			return true if friendly_blocking?(path, turn) == false
+		end
+		return false
 	end
 
-	def enemy_there?(destination)
+	def friendly_blocking?(path, turn)
+		path[1..-1].each { |coordinate| 
+			square = identify_piece_in(coordinate)
+			if turn == 'w'
+				return true if @white_pieces.include?(square) || square == "\u2659"
+			else
+				return true if @black_pieces.include?(square) || square == "\u265f"
+			end }
+		return false 
+	end
 
+	def enemy_there?(destination, turn)
+		space = identify_piece_in(destination)
+		if turn == 'w'
+			return true if @black_pieces.include?(space) || space == "\u265f"
+		else
+			return true if @white_pieces.include?(space) || space == "\u2659"
+		end
+		return false
 	end
 
 	def knight_possible_moves(position)
 		directions = [[-1, 1],[-2, 2]] #2 pairs of numbers that make up the combinations of the way knight moves.
 		moves = []
-		possible_ones = []
+		possible_coordinates = []
 		directions[0].each { |i| directions[1].each{|j| moves << [position[0]+i,position[1]+j] }} #Generates the first 4 combinations
 		directions[1].each { |j| directions[0].each{|i| moves << [position[0]+j,position[1]+i] }} #Generates the remaining 4 combination
-		moves.each { |x| possible_ones << x unless (x[0] < 0 || x[1] < 0) || (x[0] > 7 || x[1] > 7) } #Discards the moves that go off the board.
-		return possible_ones
+		moves.each { |x| possible_coordinates << x unless (x[0] < 0 || x[1] < 0) || (x[0] > 7 || x[1] > 7) } #Discards the moves that go off the board.
+		possible_coordinates
 	end
 
-	def white_pawn_possible_moves(position)
-
+	def pawn_possible_moves(position)
+		possible_coordinates = []
+		row = position[0]
+		column = position[1]
+		if identify_piece_in(position) == "\u2659"
+			possible_coordinates << [row+1, column]
+			possible_coordinates << [row+2, column] if row == 1
+			possible_coordinates << [row+1, column+1] if enemy_there?([row+1, column+1], "w")
+			possible_coordinates << [row+1, column-1] if enemy_there?([row+1, column-1], "w") 
+		else
+			possible_coordinates << [row-1, column]
+			possible_coordinates << [row-2, column] if row == 6
+			possible_coordinates << [row-1, column-1] if enemy_there?([row-1, column-1], "b")
+			possible_coordinates << [row-1, column+1] if enemy_there?([row-1, column+1], "b")
+		end
+		possible_coordinates
 	end
 
-	def black_pawn_possible_moves(position)
-
-	end
-
-	def bishop_possible_moves(position)
+	def bishop_possible_moves(position, counter=8 )
 		row_u = position[0]
 		row_d = position[0]
 		indexr = position[1]
 		indexl = position[1]
-		possible_ones = []
-		counter = 0
-		while counter < 8
+		possible_coordinates = []
+		while counter > 0
 			row_u += 1
 			row_d -= 1
 			indexr += 1
 			indexl -= 1
-			possible_ones << [row_u, indexr] unless row_u > 8 || indexr > 7
-			possible_ones << [row_u, indexl] unless row_u > 8 || indexl < 0
-			possible_ones << [row_d, indexr] unless row_d < 0 || indexr > 7
-			possible_ones << [row_d, indexl] unless row_d < 0 || indexl < 0
- 			counter += 1
+			possible_coordinates << [row_u, indexr] unless row_u > 7 || indexr > 7
+			possible_coordinates << [row_u, indexl] unless row_u > 7 || indexl < 0
+			possible_coordinates << [row_d, indexr] unless row_d < 0 || indexr > 7
+			possible_coordinates << [row_d, indexl] unless row_d < 0 || indexl < 0
+ 			counter -= 1
 		end
-		return possible_ones
+		return possible_coordinates
 	end
 
-	def rook_possible_moves(position)
-		possible_ones = []
-		0.upto(7) { |x| possible_ones << [x, position[1]]; possible_ones << [position[0], x]}
-		return possible_ones
+	def rook_possible_moves(position, counter=8)
+		row_u = position[0]
+		row_d = position[0]
+		indexr = position[1]
+		indexl = position[1]
+		possible_coordinates = []
+		while counter > 0
+		row_u += 1
+		row_d -= 1
+		indexr += 1
+		indexl -= 1
+		possible_coordinates << [position[0], indexr] unless indexr > 7
+		possible_coordinates << [position[0], indexl] unless indexl < 0
+		possible_coordinates << [row_d, position[1]] unless row_d < 0
+		possible_coordinates << [row_u, position[1]] unless row_u > 7
+		counter -= 1
+		end 
+		possible_coordinates
 	end
 
-	def queen_possible_moves(position)
-		possible_ones = rook_possible_moves(position) + bishop_possible_moves(position)
+	def queen_possible_moves(position, all=true)
+		if all
+			possible_coordinates = rook_possible_moves(position) + bishop_possible_moves(position)
+		else
+			possible_coordinates = rook_possible_moves(position, 1) + bishop_possible_moves(position, 1)
+		end
+		possible_coordinates
 	end
 
 	def king_possible_moves(position)
@@ -157,11 +216,61 @@ class ChessBoard
 		possible_ones << [row, column - 1] unless column < 0
 		possible_ones << [row + 1, column] unless row > 7
 		possible_ones << [row - 1, column] unless row < 0
+		possible_ones
+	end
+	
+	def walk_this_way(root, destination) #Breadth first search method
+		piece = identify_piece_in(root)
+		current = Node.new(root)
+		queue = [current]
+		path = []
+		found = false
+		begin
+			current_child = possible_moves(current.home, piece)
+			current_child.each{ |x| queue << Node.new(x, current) }
+			current = queue.shift
+
+			if current.home == destination
+				path << current.home
+				#Adds up the chain to obtain the full path
+				until current.parent.nil? 
+				path << current.parent.home
+				current = current.parent
+				end
+				path.reverse! #Reverses the array to show root as first one and destination as last one.
+ 				found = true
+			end
+		end until found == true
+		return path 
+	end
+
+	def possible_moves(position, piece)
+		possible = []
+		case piece
+		when "\u2658", "\u265e" 
+			return knight_possible_moves(position)
+		when "\u2657", "\u265d"
+			return bishop_possible_moves(position, 1)
+		when "\u2656", "\u265c" 
+			return rook_possible_moves(position, 1)
+		when "\u2655", "\u265b" 
+			return queen_possible_moves(position, 1)
+		when "\u2654", "\u265a"
+			return king_possible_moves(position, 1)
+		when "\u265f", "\u2659" #black pawn
+			return pawn_possible_moves(position, piece)
+		end
 	end
 end
 
+class Node
+	attr_accessor :home, :parent
 
-
+	def initialize(home, parent=nil)
+		@home = home
+		@parent = parent
+	end
+end
 
 
 
