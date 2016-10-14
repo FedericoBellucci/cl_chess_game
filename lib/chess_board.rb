@@ -2,15 +2,16 @@ require_relative 'chess_tools'
 include ChessTools
 
 class ChessBoard	
-	attr_reader :board
+	attr_reader :board, :check, :checkmate
 
-	def initialize			#rook 		#knight 	#bishop 	#queen 		#king 
-		@white_pieces = ["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2659"]
-		@black_pieces = ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265f"]
+	def initialize			#pawn, rook, knight, bishop, queen, king 
+		@white_pieces = ["\u2659","\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
+		@black_pieces = ["\u265f", "\u265c", "\u265e", "\u265d", "\u265b", "\u265a"]
 		@board = populate_board
 		@check = false
 		@checkmate = false
 		@promotion = false
+		@pieces = [@white_pieces, @black_pieces]
 	end
 
 	def populate_board
@@ -46,6 +47,7 @@ class ChessBoard
 	end
 
 	def move_piece(turn, from, to)
+		@check = false
 		piece_from = from.position #function from ChessTools
 		piece_to = to.position
 		piece = identify_piece_in(piece_from)
@@ -54,11 +56,31 @@ class ChessBoard
 		return false if piece == "\u2610"
 		if valid_move?(piece_from, piece_to, turn)
 			make_move(piece_from, piece_to, turn) unless @promotion == true
+			call_check?(piece_to, where_is_this(@pieces[1].last), turn)
+			@pieces[0], @pieces[1] = @pieces[1], @pieces[0]
 			@promotion = false
 			return true
 		else
 			return false
 		end
+	end
+
+	def call_check?(enemy, king, color)
+		if valid_move?(enemy, king, color)
+			@check = true
+		else
+			@check = false
+		end	
+	end
+
+	def where_is_this(piece)
+		locations = []
+		@board.each_with_index { |row, num| 
+			row.each_with_index { |column, i| 
+				if column == piece
+				locations = [num, i]
+				end } }
+			return locations
 	end
 
 
@@ -83,7 +105,7 @@ private
 		piece = identify_piece_in(piece_from)
 		case piece
 		when "\u2658", "\u265e" 
-			if knight_possible_moves(piece_from).include?(piece_to) 
+			if knight_possible_moves(piece_from).include?(piece_to)
 				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2657", "\u265d"
@@ -99,7 +121,7 @@ private
 				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2654", "\u265a"
-			if king_possible_moves(piece_from).include?(piece_to)
+			if king_possible_moves(piece_from).include?(piece_to) 
 				directions = king_possible_moves(piece_from)
 			end
 		when "\u2659", "\u265f" #pawns
@@ -248,7 +270,7 @@ private
 		possible_ones << [row - 1, column] unless row < 0
 		possible_ones
 	end
-	
+
 	def walk_this_way(root, destination) #Breadth first search method
 		piece = identify_piece_in(root)
 		current = Node.new(root)
@@ -287,8 +309,8 @@ private
 			return queen_possible_moves(position, false)
 		when "\u2654", "\u265a"
 			return king_possible_moves(position, 1)
-		when "\u265f", "\u2659" #black pawn
-			return pawn_possible_moves(position, piece)
+		when "\u265f", "\u2659" 
+			return pawn_possible_moves(position)
 		end
 	end
 end

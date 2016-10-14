@@ -14,7 +14,13 @@ class ChessGame
 
 	def board
 		@board.show_board
-		play
+		puts "CHECK!" if @board.check
+		if @board.checkmate
+			puts "CHECKMATE!"
+			puts "#{@players[@turn].name} Lost."
+		else
+			play
+		end
 	end
 	def play
 		piece_from = ""

@@ -34,6 +34,12 @@ describe ChessBoard do
 			it { expect(chess.move_piece('w', "a4", "a5")).to be false}
 		end
 	end
+
+	describe "#where_is_this" do
+		context "Given a unicode it returns the coordinates of that piece in the board" do
+			it { expect(chess.where_is_this("\u2654")).to eql([0,4]) }
+		end
+	end
 end
 
 
