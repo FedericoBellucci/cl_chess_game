@@ -65,7 +65,7 @@ class ChessBoard
 	def identify_piece_in(position)
 		piece = @board[position[0]][position[1]]
 	end
-#TODO: implement castling, check, checkmate and promotion
+#TODO: implement castling, check, checkmate
 
 private
 	
@@ -122,19 +122,19 @@ private
 	def valid_move?(piece_from, piece_to, turn)
 		path = complete_path(piece_from, piece_to)
 		unless path.empty?
-			return true if friendly_blocking?(path, turn) == false
+			return true unless piece_blocking?(path, turn)
 		end
 		return false
 	end
 
-	def friendly_blocking?(path, turn)
-		path[1..-1].each { |coordinate| 
-			square = identify_piece_in(coordinate)
-			if turn == 'w'
-				return true if @white_pieces.include?(square)
-			else
-				return true if @black_pieces.include?(square)
-			end }
+	def piece_blocking?(path, turn)
+		path[1...-1].each { |coordinate| square = identify_piece_in(coordinate); return true unless square == "\u2610" }
+		square = identify_piece_in(path[-1])
+		if turn == 'w'
+			return true if @white_pieces.include?(square)
+		else
+			return true if @black_pieces.include?(square)
+		end 
 		return false 
 	end
 
