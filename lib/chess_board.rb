@@ -5,8 +5,8 @@ class ChessBoard
 	attr_reader :board
 
 	def initialize			#rook 		#knight 	#bishop 	#queen 		#king 
-		@white_pieces = ["\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
-		@black_pieces = ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a"]
+		@white_pieces = ["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2659"]
+		@black_pieces = ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265f"]
 		@board = populate_board
 		@check = false
 		@checkmate = false
@@ -49,8 +49,8 @@ class ChessBoard
 		piece_from = from.position #function from ChessTools
 		piece_to = to.position
 		piece = identify_piece_in(piece_from)
-		return false if (turn == "w") && (@black_pieces.include?(piece) || piece == "\u265f")
-		return false if (turn == "b") && (@white_pieces.include?(piece) || piece == "\u2659")
+		return false if (turn == "w") && (@black_pieces.include?(piece))
+		return false if (turn == "b") && (@white_pieces.include?(piece))
 		return false if piece == "\u2610"
 		if valid_move?(piece_from, piece_to, turn)
 			make_move(piece_from, piece_to, turn) unless @promotion == true
@@ -131,9 +131,9 @@ private
 		path[1..-1].each { |coordinate| 
 			square = identify_piece_in(coordinate)
 			if turn == 'w'
-				return true if @white_pieces.include?(square) || square == "\u2659"
+				return true if @white_pieces.include?(square)
 			else
-				return true if @black_pieces.include?(square) || square == "\u265f"
+				return true if @black_pieces.include?(square)
 			end }
 		return false 
 	end
@@ -141,9 +141,9 @@ private
 	def enemy_there?(destination, turn)
 		space = identify_piece_in(destination)
 		if turn == 'w'
-			return true if @black_pieces.include?(space) || space == "\u265f"
+			return true if @black_pieces.include?(space)
 		else
-			return true if @white_pieces.include?(space) || space == "\u2659"
+			return true if @white_pieces.include?(space)
 		end
 		return false
 	end
