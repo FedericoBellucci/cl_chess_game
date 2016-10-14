@@ -35,8 +35,7 @@ class ChessGame
 			print "Choose destination: "
 			piece_to = gets.chomp
 		end until @hor_guide.include?(piece_to[0]) && @ver_guide.include?(piece_to[1])
-	
-		if @board.move_piece(@players[@turn].color, piece_from, piece_to)
+		if @board.move_piece(@players[@turn].color, piece_from, piece_to) == true
 			@turn == 0 ? @turn = 1 : @turn = 0
 		else
 			puts "Invalid move"
@@ -74,5 +73,6 @@ class ChessGame
 		puts "	GOOD LUCK! "
 		board
 	end
+
 end
 ChessGame.new

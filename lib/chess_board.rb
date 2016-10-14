@@ -7,11 +7,12 @@ class ChessBoard
 	def initialize			#pawn, rook, knight, bishop, queen, king 
 		@white_pieces = ["\u2659","\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
 		@black_pieces = ["\u265f", "\u265c", "\u265e", "\u265d", "\u265b", "\u265a"]
+		@pieces = [@white_pieces, @black_pieces]
 		@board = populate_board
 		@check = false
 		@checkmate = false
 		@promotion = false
-		@pieces = [@white_pieces, @black_pieces]
+		@castl = false
 	end
 
 	def populate_board
@@ -55,10 +56,11 @@ class ChessBoard
 		return false if (turn == "b") && (@white_pieces.include?(piece))
 		return false if piece == "\u2610"
 		if valid_move?(piece_from, piece_to, turn)
-			make_move(piece_from, piece_to, turn) unless @promotion == true
-			call_check?(piece_to, where_is_this(@pieces[1].last), turn)
+			make_move(piece_from, piece_to, turn) unless @promotion == true || @castl == true
+			call_check?(piece_to, where_is_this(@pieces[1].last), turn) unless @castl == true
 			@pieces[0], @pieces[1] = @pieces[1], @pieces[0]
 			@promotion = false
+			@castl = false
 			return true
 		else
 			return false
@@ -74,7 +76,7 @@ class ChessBoard
 		end	
 	end
 
-	def where_is_this(piece)
+	def where_is_this(piece) #giving a unicode returns its location in the board(for king mainly)
 		locations = []
 		@board.each_with_index { |row, num| 
 			row.each_with_index { |column, i| 
@@ -88,11 +90,11 @@ class ChessBoard
 	def identify_piece_in(position)
 		piece = @board[position[0]][position[1]]
 	end
-#TODO: implement castling, check, checkmate
+#TODO: implement castling
 
 private
 	
-	def make_move(from, to, turn)
+	def make_move(from, to, turn) #makes the moves of the piece in the board
 		if enemy_there?(to, turn)
 			@board[to[0]][to[1]] = @board[from[0]][from[1]]
 			@board[from[0]][from[1]] = "\u2610"
@@ -115,6 +117,8 @@ private
 			end
 		when "\u2656", "\u265c" 
 			if rook_possible_moves(piece_from).include?(piece_to)
+				void_castling
+				@blocked << piece_from
 				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2655", "\u265b" 
@@ -122,10 +126,18 @@ private
 				directions = walk_this_way(piece_from, piece_to)
 			end
 		when "\u2654", "\u265a"
+			void_castling
 			if king_possible_moves(piece_from).include?(piece_to) 
-				directions = king_possible_moves(piece_from)
+				directions = walk_this_way(piece_from, piece_to)
 			end
-		when "\u2659", "\u265f" #pawns
+			if castling(piece_from, piece_to) && !@blocked.include?(piece_from)
+				@castl = true
+				castle_it(piece_from, piece_to) 
+				directions = [piece_from, piece_to]
+			end
+			@blocked << piece_from if piece_from == [0, 4] || piece_from == [7, 4]
+
+		when "\u2659", "\u265f" #TODO: refactor into another function
 			if pawn_possible_moves(piece_from).include?(piece_to)
 				if (piece == "\u2659" && piece_to[0] == 7)
 					@promotion = true
@@ -144,6 +156,7 @@ private
 
 	def valid_move?(piece_from, piece_to, turn)
 		path = complete_path(piece_from, piece_to)
+		return true if @castl == true
 		if identify_piece_in(piece_from) == @pieces[0].last && !path.empty?
 			if found_enemy(piece_to, piece_from)
 				path = []
@@ -159,7 +172,7 @@ private
 		return false
 	end
 
-	def piece_blocking?(path, turn)
+	def piece_blocking?(path, turn) #checks for friendly blocking across the path
 		path[1...-1].each { |coordinate| square = identify_piece_in(coordinate); return true unless square == "\u2610" }
 		square = identify_piece_in(path[-1])
 		if turn == 'w'
@@ -206,19 +219,6 @@ private
 			possible_coordinates << [row-1, column+1] if enemy_there?([row-1, column+1], "b")
 		end
 		possible_coordinates
-	end
-
-	def choose_promotion(color)
-		begin
-			print "Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: "
-			choice = gets.strip
-		end until ['q','r','b','k'].include?(choice)
-			choice.to_unicode(color)
-	end
-
-	def promotion(from, to, replace_with)
-		@board[from[0]][from[1]] = "\u2610"
-		@board[to[0]][to[1]] = replace_with
 	end
 
 	def bishop_possible_moves(position, counter=8 )
@@ -281,6 +281,55 @@ private
 		possible_ones
 	end
 
+	def choose_promotion(color)
+		begin
+			print "Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: "
+			choice = gets.strip
+		end until ['q','r','b','k'].include?(choice)
+			choice.to_unicode(color)
+	end
+
+	def promotion(from, to, replace_with)
+		@board[from[0]][from[1]] = "\u2610"
+		@board[to[0]][to[1]] = replace_with
+	end
+
+	def void_castling #This will be 
+		@blocked = []
+	end
+	def castling(piece_from, piece_to) # all the possible conditions for a possible castling is checked here
+		if piece_from == [0, 4]
+				if piece_to == [0, 6] && (identify_piece_in([0,5]) == "\u2610" && identify_piece_in([0,6]) == "\u2610")
+					return true if identify_piece_in([0,7]) == "\u2656" && !@blocked.include?([0, 7])
+				elsif (piece_to == [0, 6] && identify_piece_in([0,1]) == "\u2610") && (identify_piece_in([0,3]) == "\u2610" && identify_piece_in([0,2]) == "\u2610")
+					return true if identify_piece_in(0,0) == "\u2656" && !@blocked.include?([0, 0])
+				end 
+		elsif piece_from == [7, 4]
+				if piece_to == [7, 6] && (identify_piece_in([7,5]) == "\u2610" && identify_piece_in([7,6]) == "\u2610")
+					return true if identify_piece_in([7,7]) == "\u2656" && !@blocked.include?([7, 7])
+				elsif (piece_to == [7, 6] && identify_piece_in([7,1]) == "\u2610") && (identify_piece_in([7,3]) == "\u2610" && identify_piece_in([7,2]) == "\u2610")
+					return true if identify_piece_in(7,0) == "\u2656" && !@blocked.include?([7, 0])
+				end 
+		end
+			return false
+	end
+	def castle_it(from, to) #moves rook and king into castling
+		@board[from[0]][from[1]], @board[to[0]][to[1]] = @board[to[0]][to[1]], @board[from[0]][from[1]]
+		if from == [0, 4]
+				if to == [0, 6]
+					@board[0][7], @board[0][5] = @board[0][5], @board[0][7]
+				else
+					@board[0][0], @board[0][3] = @board[0][3], @board[0][0]
+				end 
+		elsif from == [7, 4]
+				if to == [7, 6] 
+					@board[7][7], @board[7][5] = @board[7][5], @board[7][7]
+				else
+					@board[7][0], @board[7][3] = @board[7][3], @board[7][0]
+				end 
+		end
+	end
+
 	def call_checkmate?(enemy, king)
 		if noone_can_help?(enemy, king) && king_cannot_move(king)
 			@checkmate = true
@@ -291,7 +340,7 @@ private
 		puts king_cannot_move(king)
 	end
 
-	def noone_can_help?(enemy, king_location)
+	def noone_can_help?(enemy, king_location) #checks if a friendly piece can move in the direction of the enemy threat
 		enemy_path = complete_path(enemy, king_location)
 		king = identify_piece_in(king_location)
 
@@ -315,7 +364,7 @@ private
 		return false 
 	end
 
-	def found_enemy(move, king)
+	def found_enemy(move, king) #checks if at the possible move there is a threat 
 		king = identify_piece_in(king)
 		@board.each_with_index { |row, num| 
 			row.each_with_index { |column, i|
@@ -365,7 +414,7 @@ private
 		when "\u2655", "\u265b" 
 			return queen_possible_moves(position, false)
 		when "\u2654", "\u265a"
-			return king_possible_moves(position, 1)
+			return king_possible_moves(position)
 		when "\u265f", "\u2659" 
 			return pawn_possible_moves(position)
 		end
