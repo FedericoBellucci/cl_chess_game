@@ -29,7 +29,7 @@ class ChessGame
 			print "Choose destination: "
 			piece_to = gets.chomp
 		end until @hor_guide.include?(piece_to[0]) && @ver_guide.include?(piece_to[1])
-		puts "#{@players[@turn].color}"
+	
 		if @board.move_piece(@players[@turn].color, piece_from, piece_to)
 			@turn == 0 ? @turn = 1 : @turn = 0
 		else

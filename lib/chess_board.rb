@@ -4,12 +4,13 @@ include ChessTools
 class ChessBoard	
 	attr_reader :board
 
-	def initialize			#rook 		#knight 	#bishop 	#queen 		#king 		#bishop 	#knight  	#rook
-		@white_pieces = ["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2657", "\u2658", "\u2656"]
-		@black_pieces = ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]
+	def initialize			#rook 		#knight 	#bishop 	#queen 		#king 
+		@white_pieces = ["\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
+		@black_pieces = ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a"]
 		@board = populate_board
 		@check = false
 		@checkmate = false
+		@promotion = false
 	end
 
 	def populate_board
@@ -52,29 +53,35 @@ class ChessBoard
 		return false if (turn == "b") && (@white_pieces.include?(piece) || piece == "\u2659")
 		return false if piece == "\u2610"
 		if valid_move?(piece_from, piece_to, turn)
-			if enemy_there?(piece_to, turn)
-				@board[piece_to[0]][piece_to[1]] = @board[piece_from[0]][piece_from[1]]
-				@board[piece_from[0]][piece_from[1]] = "\u2610"
-			else
-				@board[piece_from[0]][piece_from[1]], @board[piece_to[0]][piece_to[1]] = @board[piece_to[0]][piece_to[1]], @board[piece_from[0]][piece_from[1]]
-			end
+			make_move(piece_from, piece_to, turn) unless @promotion == true
+			@promotion = false
 			return true
 		else
 			return false
 		end
 	end
 
+
 	def identify_piece_in(position)
 		piece = @board[position[0]][position[1]]
 	end
-#TODO: implement kill tracker of pieces eaten, check, checkmate and promotion
+#TODO: implement castling, check, checkmate and promotion
 
 private
+	
+	def make_move(from, to, turn)
+		if enemy_there?(to, turn)
+			@board[to[0]][to[1]] = @board[from[0]][from[1]]
+			@board[from[0]][from[1]] = "\u2610"
+		else
+			@board[from[0]][from[1]], @board[to[0]][to[1]] = @board[to[0]][to[1]], @board[from[0]][from[1]]
+		end
+	end
 
 	def complete_path(piece_from, piece_to)
 		directions = []
-
-		case identify_piece_in(piece_from)
+		piece = identify_piece_in(piece_from)
+		case piece
 		when "\u2658", "\u265e" 
 			if knight_possible_moves(piece_from).include?(piece_to) 
 				directions = walk_this_way(piece_from, piece_to)
@@ -97,6 +104,15 @@ private
 			end
 		when "\u2659", "\u265f" #pawns
 			if pawn_possible_moves(piece_from).include?(piece_to)
+				if (piece == "\u2659" && piece_to[0] == 7)
+					@promotion = true
+					replace = choose_promotion('w')
+					promotion(piece_from, piece_to, replace)
+				elsif (piece == "\u265f" && piece_to[0] == 0)
+					@promotion = true
+					replace = choose_promotion('b')
+					promotion(piece_from, piece_to, "\u265b")
+				end
 				directions = pawn_possible_moves(piece_from)
 			end
 		end
@@ -158,6 +174,19 @@ private
 			possible_coordinates << [row-1, column+1] if enemy_there?([row-1, column+1], "b")
 		end
 		possible_coordinates
+	end
+
+	def choose_promotion(color)
+		begin
+			print "Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: "
+			choice = gets.strip
+		end until ['q','r','b','k'].include?(choice)
+			choice.to_unicode(color)
+	end
+
+	def promotion(from, to, replace_with)
+		@board[from[0]][from[1]] = "\u2610"
+		@board[to[0]][to[1]] = replace_with
 	end
 
 	def bishop_possible_moves(position, counter=8 )
