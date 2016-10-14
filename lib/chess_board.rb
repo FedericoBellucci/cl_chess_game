@@ -66,8 +66,9 @@ class ChessBoard
 	end
 
 	def call_check?(enemy, king, color)
-		if valid_move?(enemy, king, color)
+		if valid_move?(enemy, king, color) 
 			@check = true
+			call_checkmate?(enemy, king)
 		else
 			@check = false
 		end	
@@ -143,6 +144,15 @@ private
 
 	def valid_move?(piece_from, piece_to, turn)
 		path = complete_path(piece_from, piece_to)
+		if identify_piece_in(piece_from) == @pieces[0].last && !path.empty?
+			if found_enemy(piece_to, piece_from)
+				path = []
+			end
+		elsif identify_piece_in(piece_from) == @pieces[1].last && !path.empty?
+			if found_enemy(piece_to, piece_from)
+				path = []
+			end
+		end
 		unless path.empty?
 			return true unless piece_blocking?(path, turn)
 		end
@@ -270,6 +280,53 @@ private
 		possible_ones << [row - 1, column] unless row < 0
 		possible_ones
 	end
+
+	def call_checkmate?(enemy, king)
+		if noone_can_help?(enemy, king) && king_cannot_move(king)
+			@checkmate = true
+		else
+			@checkmate = false
+		end
+		puts noone_can_help?(enemy, king)
+		puts king_cannot_move(king)
+	end
+
+	def noone_can_help?(enemy, king_location)
+		enemy_path = complete_path(enemy, king_location)
+		king = identify_piece_in(king_location)
+
+		@board.each_with_index { |row, num| row.each_with_index { |column, i|
+			if column.color == king.color && column != king
+					enemy_path.each { |x| 
+						if valid_move?([num, i], x, king.color) 
+							return false 
+						end }
+				end } }
+		return true
+	end
+
+	def king_cannot_move(location)
+		king = identify_piece_in(location)
+		moves = king_possible_moves(location)
+		invalid_moves = 0
+		moves.each_with_index { |x, i| invalid_moves += 1 unless valid_move?(location, x, king.color)}
+		print moves
+		return true if invalid_moves == moves.size
+		return false 
+	end
+
+	def found_enemy(move, king)
+		king = identify_piece_in(king)
+		@board.each_with_index { |row, num| 
+			row.each_with_index { |column, i|
+				if column.color != king.color 
+						unless complete_path(where_is_this(column), move).empty?
+							return true
+						end 
+					end } } 
+		return false
+	end
+
 
 	def walk_this_way(root, destination) #Breadth first search method
 		piece = identify_piece_in(root)
