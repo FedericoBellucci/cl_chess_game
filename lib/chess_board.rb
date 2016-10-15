@@ -166,7 +166,7 @@ private
 				path = []
 			end
 		end
-		unless path.empty?
+		unless path.empty? || path.size < 2
 			return true unless piece_blocking?(path, turn)
 		end
 		return false
@@ -186,8 +186,10 @@ private
 	def enemy_there?(destination, turn)
 		space = identify_piece_in(destination)
 		if turn == 'w'
+			@checkmate = true if space == @black_pieces.last
 			return true if @black_pieces.include?(space)
 		else
+			@checkmate = true if space == @white_pieces.last
 			return true if @white_pieces.include?(space)
 		end
 		return false
@@ -301,14 +303,14 @@ private
 		if piece_from == [0, 4]
 				if piece_to == [0, 6] && (identify_piece_in([0,5]) == "\u2610" && identify_piece_in([0,6]) == "\u2610")
 					return true if identify_piece_in([0,7]) == "\u2656" && !@blocked.include?([0, 7])
-				elsif (piece_to == [0, 6] && identify_piece_in([0,1]) == "\u2610") && (identify_piece_in([0,3]) == "\u2610" && identify_piece_in([0,2]) == "\u2610")
-					return true if identify_piece_in(0,0) == "\u2656" && !@blocked.include?([0, 0])
+				elsif (piece_to == [0, 2] && identify_piece_in([0,1]) == "\u2610") && (identify_piece_in([0,3]) == "\u2610" && identify_piece_in([0,2]) == "\u2610")
+					return true if identify_piece_in([0,0]) == "\u2656" && !@blocked.include?([0, 0])
 				end 
 		elsif piece_from == [7, 4]
 				if piece_to == [7, 6] && (identify_piece_in([7,5]) == "\u2610" && identify_piece_in([7,6]) == "\u2610")
-					return true if identify_piece_in([7,7]) == "\u2656" && !@blocked.include?([7, 7])
-				elsif (piece_to == [7, 6] && identify_piece_in([7,1]) == "\u2610") && (identify_piece_in([7,3]) == "\u2610" && identify_piece_in([7,2]) == "\u2610")
-					return true if identify_piece_in(7,0) == "\u2656" && !@blocked.include?([7, 0])
+					return true if identify_piece_in([7,7]) == "\u265c" && !@blocked.include?([7, 7])
+				elsif (piece_to == [7, 2] && identify_piece_in([7,1]) == "\u2610") && (identify_piece_in([7,3]) == "\u2610" && identify_piece_in([7,2]) == "\u2610")
+					return true if identify_piece_in([7,0]) == "\u265c" && !@blocked.include?([7, 0])
 				end 
 		end
 			return false
@@ -336,8 +338,6 @@ private
 		else
 			@checkmate = false
 		end
-		puts noone_can_help?(enemy, king)
-		puts king_cannot_move(king)
 	end
 
 	def noone_can_help?(enemy, king_location) #checks if a friendly piece can move in the direction of the enemy threat
