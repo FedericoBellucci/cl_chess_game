@@ -99,7 +99,7 @@ class ChessGame
     if file_name == 'new'
       puts 'New Chess Game'
     elsif File.exists?("bin/#{file_name}.yaml")
-      saved_game = File.open("bin/#{file_name}.yaml", 'r') { |file| file.read }
+      saved_game = File.open("bin/#{file_name}.yaml", 'r', &:read)
       game = YAML.load saved_game
       game.board
     else
