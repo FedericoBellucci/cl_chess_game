@@ -26,12 +26,12 @@ class ChessBoard
               ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]]					# row 7
 
     @board.each_with_index { |row, i|
-    case i
-    when 1
-      (0...row.size).each { |i| row[i] = "\u2659" } # Populate white pawns
-    when 6
-      (0...row.size).each { |i| row[i] = "\u265f" } # Populate black pawns
-    end
+      case i
+      when 1
+        (0...row.size).each { |i| row[i] = "\u2659" } # Populate white pawns
+      when 6
+        (0...row.size).each { |i| row[i] = "\u265f" } # Populate black pawns
+      end
     }
   end
 
@@ -81,7 +81,7 @@ class ChessBoard
     @board.each_with_index { |row, num|
       row.each_with_index { |column, i|
         if column == piece
-        locations = [num, i]
+          locations = [num, i]
         end } }
     locations
   end
@@ -250,7 +250,7 @@ private
     indexl = position[1]
     possible_coordinates = []
     while counter > 0
-    row_u += 1
+      row_u += 1
     row_d -= 1
     indexr += 1
     indexl -= 1
@@ -301,34 +301,34 @@ private
   end
   def castling(piece_from, piece_to) # all the possible conditions for a possible castling is checked here
     if piece_from == [0, 4]
-        if piece_to == [0, 6] && (identify_piece_in([0, 5]) == "\u2610" && identify_piece_in([0, 6]) == "\u2610")
-          return true if identify_piece_in([0, 7]) == "\u2656" && !@blocked.include?([0, 7])
-        elsif (piece_to == [0, 2] && identify_piece_in([0, 1]) == "\u2610") && (identify_piece_in([0, 3]) == "\u2610" && identify_piece_in([0, 2]) == "\u2610")
-          return true if identify_piece_in([0, 0]) == "\u2656" && !@blocked.include?([0, 0])
-        end
+      if piece_to == [0, 6] && (identify_piece_in([0, 5]) == "\u2610" && identify_piece_in([0, 6]) == "\u2610")
+        return true if identify_piece_in([0, 7]) == "\u2656" && !@blocked.include?([0, 7])
+      elsif (piece_to == [0, 2] && identify_piece_in([0, 1]) == "\u2610") && (identify_piece_in([0, 3]) == "\u2610" && identify_piece_in([0, 2]) == "\u2610")
+        return true if identify_piece_in([0, 0]) == "\u2656" && !@blocked.include?([0, 0])
+      end
     elsif piece_from == [7, 4]
-        if piece_to == [7, 6] && (identify_piece_in([7, 5]) == "\u2610" && identify_piece_in([7, 6]) == "\u2610")
-          return true if identify_piece_in([7, 7]) == "\u265c" && !@blocked.include?([7, 7])
-        elsif (piece_to == [7, 2] && identify_piece_in([7, 1]) == "\u2610") && (identify_piece_in([7, 3]) == "\u2610" && identify_piece_in([7, 2]) == "\u2610")
-          return true if identify_piece_in([7, 0]) == "\u265c" && !@blocked.include?([7, 0])
-        end
+      if piece_to == [7, 6] && (identify_piece_in([7, 5]) == "\u2610" && identify_piece_in([7, 6]) == "\u2610")
+        return true if identify_piece_in([7, 7]) == "\u265c" && !@blocked.include?([7, 7])
+      elsif (piece_to == [7, 2] && identify_piece_in([7, 1]) == "\u2610") && (identify_piece_in([7, 3]) == "\u2610" && identify_piece_in([7, 2]) == "\u2610")
+        return true if identify_piece_in([7, 0]) == "\u265c" && !@blocked.include?([7, 0])
+      end
     end
     false
   end
   def castle_it(from, to) # moves rook and king into castling
     @board[from[0]][from[1]], @board[to[0]][to[1]] = @board[to[0]][to[1]], @board[from[0]][from[1]]
     if from == [0, 4]
-        if to == [0, 6]
-          @board[0][7], @board[0][5] = @board[0][5], @board[0][7]
-        else
-          @board[0][0], @board[0][3] = @board[0][3], @board[0][0]
-        end
+      if to == [0, 6]
+        @board[0][7], @board[0][5] = @board[0][5], @board[0][7]
+      else
+        @board[0][0], @board[0][3] = @board[0][3], @board[0][0]
+      end
     elsif from == [7, 4]
-        if to == [7, 6]
-          @board[7][7], @board[7][5] = @board[7][5], @board[7][7]
-        else
-          @board[7][0], @board[7][3] = @board[7][3], @board[7][0]
-        end
+      if to == [7, 6]
+        @board[7][7], @board[7][5] = @board[7][5], @board[7][7]
+      else
+        @board[7][0], @board[7][3] = @board[7][3], @board[7][0]
+      end
     end
   end
 
@@ -346,10 +346,10 @@ private
 
     @board.each_with_index { |row, num| row.each_with_index { |column, i|
       if column.color == king.color && column != king
-          enemy_path.each { |x|
-            if valid_move?([num, i], x, king.color)
-              return false
-            end }
+        enemy_path.each { |x|
+          if valid_move?([num, i], x, king.color)
+            return false
+          end }
         end } }
     true
   end
@@ -369,9 +369,9 @@ private
     @board.each_with_index { |row, num|
       row.each_with_index { |column, i|
         if column.color != king.color
-            unless complete_path(where_is_this(column), move).empty?
-              return true
-            end
+          unless complete_path(where_is_this(column), move).empty?
+            return true
+          end
           end } }
     false
   end
@@ -392,7 +392,7 @@ private
         path << current.home
         # Adds up the chain to obtain the full path
         until current.parent.nil?
-        path << current.parent.home
+          path << current.parent.home
         current = current.parent
         end
         path.reverse! # Reverses the array to show root as first one and destination as last one.
