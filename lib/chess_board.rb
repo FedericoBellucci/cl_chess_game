@@ -55,16 +55,14 @@ class ChessBoard
     return false if (turn == 'w') && @black_pieces.include?(piece)
     return false if (turn == 'b') && @white_pieces.include?(piece)
     return false if piece == "\u2610"
-    if valid_move?(piece_from, piece_to, turn)
-      make_move(piece_from, piece_to, turn) unless @promotion == true || @castl == true
-      call_check?(piece_to, where_is_this(@pieces[1].last), turn) unless @castl == true
-      @pieces[0], @pieces[1] = @pieces[1], @pieces[0]
-      @promotion = false
-      @castl = false
-      return true
-    else
-      return false
-    end
+    return false unless valid_move?(piece_from, piece_to, turn)
+
+    make_move(piece_from, piece_to, turn) unless @promotion == true || @castl == true
+    call_check?(piece_to, where_is_this(@pieces[1].last), turn) unless @castl == true
+    @pieces[0], @pieces[1] = @pieces[1], @pieces[0]
+    @promotion = false
+    @castl = false
+    true
   end
 
   def call_check?(enemy, king, color)
