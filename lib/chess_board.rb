@@ -89,7 +89,7 @@ class ChessBoard
   def identify_piece_in(position)
     piece = @board[position[0]][position[1]]
   end
-# TODO: implement castling
+  # TODO: implement castling
 
   private
 
