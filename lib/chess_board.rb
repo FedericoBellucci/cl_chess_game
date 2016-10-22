@@ -201,8 +201,8 @@ private
     directions = [[-1, 1], [-2, 2]] # 2 pairs of numbers that make up the combinations of the way knight moves.
     moves = []
     possible_coordinates = []
-    directions[0].each { |i| directions[1].each { |j| moves << [position[0]+i, position[1]+j] } } # Generates the first 4 combinations
-    directions[1].each { |j| directions[0].each { |i| moves << [position[0]+j, position[1]+i] } } # Generates the remaining 4 combination
+    directions[0].each { |i| directions[1].each { |j| moves << [position[0] + i, position[1] + j] } } # Generates the first 4 combinations
+    directions[1].each { |j| directions[0].each { |i| moves << [position[0] + j, position[1] + i] } } # Generates the remaining 4 combination
     moves.each { |x| possible_coordinates << x unless (x[0] < 0 || x[1] < 0) || (x[0] > 7 || x[1] > 7) } # Discards the moves that go off the board.
     possible_coordinates
   end
@@ -212,15 +212,15 @@ private
     row = position[0]
     column = position[1]
     if identify_piece_in(position) == "\u2659"
-      possible_coordinates << [row+1, column]
-      possible_coordinates << [row+2, column] if row == 1
-      possible_coordinates << [row+1, column+1] if enemy_there?([row+1, column+1], 'w')
-      possible_coordinates << [row+1, column-1] if enemy_there?([row+1, column-1], 'w')
+      possible_coordinates << [row + 1, column]
+      possible_coordinates << [row + 2, column] if row == 1
+      possible_coordinates << [row + 1, column + 1] if enemy_there?([row + 1, column + 1], 'w')
+      possible_coordinates << [row + 1, column - 1] if enemy_there?([row + 1, column - 1], 'w')
     else
-      possible_coordinates << [row-1, column]
-      possible_coordinates << [row-2, column] if row == 6
-      possible_coordinates << [row-1, column-1] if enemy_there?([row-1, column-1], 'b')
-      possible_coordinates << [row-1, column+1] if enemy_there?([row-1, column+1], 'b')
+      possible_coordinates << [row - 1, column]
+      possible_coordinates << [row - 2, column] if row == 6
+      possible_coordinates << [row - 1, column - 1] if enemy_there?([row - 1, column - 1], 'b')
+      possible_coordinates << [row - 1, column + 1] if enemy_there?([row - 1, column + 1], 'b')
     end
     possible_coordinates
   end
