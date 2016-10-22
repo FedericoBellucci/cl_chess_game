@@ -1,6 +1,6 @@
 require 'player'
 
-describe Player do 
+describe Player do
   let(:player) { Player.new('Rob', 'white') }
 
   context 'Returns name and color' do

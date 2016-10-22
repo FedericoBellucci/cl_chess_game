@@ -2,7 +2,7 @@ require_relative 'player'
 require_relative 'chess_board'
 require 'yaml'
 
-class ChessGame 
+class ChessGame
 
   def initialize
     load if Dir.glob('bin/*').size > 0
@@ -79,7 +79,7 @@ class ChessGame
     puts "\tGOOD LUCK! "
     board
   end
-  
+
   def save
     print 'Name the file you want to save: '
     file_name = gets.strip.downcase.split(' ').join('_')
@@ -92,7 +92,7 @@ class ChessGame
       exit
     end
   end
-  
+
   def load
     puts "You have saved games, choose from the list to load a game or type 'new' for a new game."
     Dir.entries('bin').each { |f| puts f.split('.yaml'); puts ''}

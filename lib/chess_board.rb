@@ -1,10 +1,10 @@
 require_relative 'chess_tools'
 include ChessTools
 
-class ChessBoard	
+class ChessBoard
   attr_reader :board, :check, :checkmate
 
-  def initialize			#pawn, rook, knight, bishop, queen, king 
+  def initialize			#pawn, rook, knight, bishop, queen, king
     @white_pieces = ["\u2659","\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
     @black_pieces = ["\u265f", "\u265c", "\u265e", "\u265d", "\u265b", "\u265a"]
     @pieces = [@white_pieces, @black_pieces]
@@ -25,7 +25,7 @@ class ChessBoard
               Array.new(8, "\u2610"), #row 6
               ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]]					#row 7
 
-    @board.each_with_index { |row, i| 
+    @board.each_with_index { |row, i|
     case i
     when 1
       (0...row.size).each { |i| row[i] = "\u2659" } #Populate white pawns
@@ -68,18 +68,18 @@ class ChessBoard
   end
 
   def call_check?(enemy, king, color)
-    if valid_move?(enemy, king, color) 
+    if valid_move?(enemy, king, color)
       @check = true
       call_checkmate?(enemy, king)
     else
       @check = false
-    end	
+    end
   end
 
   def where_is_this(piece) #giving a unicode returns its location in the board(for king mainly)
     locations = []
-    @board.each_with_index { |row, num| 
-      row.each_with_index { |column, i| 
+    @board.each_with_index { |row, num|
+      row.each_with_index { |column, i|
         if column == piece
         locations = [num, i]
         end } }
@@ -93,7 +93,7 @@ class ChessBoard
 #TODO: implement castling
 
 private
-  
+
   def make_move(from, to, turn) #makes the moves of the piece in the board
     if enemy_there?(to, turn)
       @board[to[0]][to[1]] = @board[from[0]][from[1]]
@@ -107,7 +107,7 @@ private
     directions = []
     piece = identify_piece_in(piece_from)
     case piece
-    when "\u2658", "\u265e" 
+    when "\u2658", "\u265e"
       if knight_possible_moves(piece_from).include?(piece_to)
         directions = walk_this_way(piece_from, piece_to)
       end
@@ -115,24 +115,24 @@ private
       if bishop_possible_moves(piece_from).include?(piece_to)
         directions = walk_this_way(piece_from, piece_to)
       end
-    when "\u2656", "\u265c" 
+    when "\u2656", "\u265c"
       if rook_possible_moves(piece_from).include?(piece_to)
         void_castling
         @blocked << piece_from
         directions = walk_this_way(piece_from, piece_to)
       end
-    when "\u2655", "\u265b" 
+    when "\u2655", "\u265b"
       if queen_possible_moves(piece_from).include?(piece_to)
         directions = walk_this_way(piece_from, piece_to)
       end
     when "\u2654", "\u265a"
       void_castling
-      if king_possible_moves(piece_from).include?(piece_to) 
+      if king_possible_moves(piece_from).include?(piece_to)
         directions = walk_this_way(piece_from, piece_to)
       end
       if castling(piece_from, piece_to) && !@blocked.include?(piece_from)
         @castl = true
-        castle_it(piece_from, piece_to) 
+        castle_it(piece_from, piece_to)
         directions = [piece_from, piece_to]
       end
       @blocked << piece_from if piece_from == [0, 4] || piece_from == [7, 4]
@@ -179,8 +179,8 @@ private
       return true if @white_pieces.include?(square)
     else
       return true if @black_pieces.include?(square)
-    end 
-    return false 
+    end
+    return false
   end
 
   def enemy_there?(destination, turn)
@@ -213,7 +213,7 @@ private
       possible_coordinates << [row+1, column]
       possible_coordinates << [row+2, column] if row == 1
       possible_coordinates << [row+1, column+1] if enemy_there?([row+1, column+1], 'w')
-      possible_coordinates << [row+1, column-1] if enemy_there?([row+1, column-1], 'w') 
+      possible_coordinates << [row+1, column-1] if enemy_there?([row+1, column-1], 'w')
     else
       possible_coordinates << [row-1, column]
       possible_coordinates << [row-2, column] if row == 6
@@ -259,7 +259,7 @@ private
     possible_coordinates << [row_d, position[1]] unless row_d < 0
     possible_coordinates << [row_u, position[1]] unless row_u > 7
     counter -= 1
-    end 
+    end
     possible_coordinates
   end
 
@@ -296,7 +296,7 @@ private
     @board[to[0]][to[1]] = replace_with
   end
 
-  def void_castling #This will be 
+  def void_castling #This will be
     @blocked = []
   end
   def castling(piece_from, piece_to) # all the possible conditions for a possible castling is checked here
@@ -305,13 +305,13 @@ private
           return true if identify_piece_in([0,7]) == "\u2656" && !@blocked.include?([0, 7])
         elsif (piece_to == [0, 2] && identify_piece_in([0,1]) == "\u2610") && (identify_piece_in([0,3]) == "\u2610" && identify_piece_in([0,2]) == "\u2610")
           return true if identify_piece_in([0,0]) == "\u2656" && !@blocked.include?([0, 0])
-        end 
+        end
     elsif piece_from == [7, 4]
         if piece_to == [7, 6] && (identify_piece_in([7,5]) == "\u2610" && identify_piece_in([7,6]) == "\u2610")
           return true if identify_piece_in([7,7]) == "\u265c" && !@blocked.include?([7, 7])
         elsif (piece_to == [7, 2] && identify_piece_in([7,1]) == "\u2610") && (identify_piece_in([7,3]) == "\u2610" && identify_piece_in([7,2]) == "\u2610")
           return true if identify_piece_in([7,0]) == "\u265c" && !@blocked.include?([7, 0])
-        end 
+        end
     end
       return false
   end
@@ -322,13 +322,13 @@ private
           @board[0][7], @board[0][5] = @board[0][5], @board[0][7]
         else
           @board[0][0], @board[0][3] = @board[0][3], @board[0][0]
-        end 
+        end
     elsif from == [7, 4]
-        if to == [7, 6] 
+        if to == [7, 6]
           @board[7][7], @board[7][5] = @board[7][5], @board[7][7]
         else
           @board[7][0], @board[7][3] = @board[7][3], @board[7][0]
-        end 
+        end
     end
   end
 
@@ -346,9 +346,9 @@ private
 
     @board.each_with_index { |row, num| row.each_with_index { |column, i|
       if column.color == king.color && column != king
-          enemy_path.each { |x| 
-            if valid_move?([num, i], x, king.color) 
-              return false 
+          enemy_path.each { |x|
+            if valid_move?([num, i], x, king.color)
+              return false
             end }
         end } }
     return true
@@ -361,18 +361,18 @@ private
     moves.each_with_index { |x, i| invalid_moves += 1 unless valid_move?(location, x, king.color)}
     print moves
     return true if invalid_moves == moves.size
-    return false 
+    return false
   end
 
-  def found_enemy(move, king) #checks if at the possible move there is a threat 
+  def found_enemy(move, king) #checks if at the possible move there is a threat
     king = identify_piece_in(king)
-    @board.each_with_index { |row, num| 
+    @board.each_with_index { |row, num|
       row.each_with_index { |column, i|
-        if column.color != king.color 
+        if column.color != king.color
             unless complete_path(where_is_this(column), move).empty?
               return true
-            end 
-          end } } 
+            end
+          end } }
     return false
   end
 
@@ -391,7 +391,7 @@ private
       if current.home == destination
         path << current.home
         #Adds up the chain to obtain the full path
-        until current.parent.nil? 
+        until current.parent.nil?
         path << current.parent.home
         current = current.parent
         end
@@ -399,23 +399,23 @@ private
          found = true
       end
     end until found == true
-    return path 
+    return path
   end
 
   def possible_moves(position, piece)
     possible = []
     case piece
-    when "\u2658", "\u265e" 
+    when "\u2658", "\u265e"
       return knight_possible_moves(position)
     when "\u2657", "\u265d"
       return bishop_possible_moves(position, 1)
-    when "\u2656", "\u265c" 
+    when "\u2656", "\u265c"
       return rook_possible_moves(position, 1)
-    when "\u2655", "\u265b" 
+    when "\u2655", "\u265b"
       return queen_possible_moves(position, false)
     when "\u2654", "\u265a"
       return king_possible_moves(position)
-    when "\u265f", "\u2659" 
+    when "\u265f", "\u2659"
       return pawn_possible_moves(position)
     end
   end

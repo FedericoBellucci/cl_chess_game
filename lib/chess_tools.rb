@@ -22,7 +22,7 @@ module ChessTools
       else
         return "\u265d"
       end
-      
+
     when 'q'
       if color == 'w'
         return  "\u2655"
@@ -36,7 +36,7 @@ module ChessTools
       else
         return "\u265e"
       end
-    end 
+    end
   end
 
  def enemy_king(color)
