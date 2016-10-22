@@ -341,13 +341,13 @@ private
     enemy_path = complete_path(enemy, king_location)
     king = identify_piece_in(king_location)
 
-    @board.each_with_index do |row, num| 
+    @board.each_with_index do |row, num|
       row.each_with_index do |column, i|
         if column.color == king.color && column != king
           enemy_path.each do |x|
             return false if valid_move?([num, i], x, king.color)
           end
-          end
+        end
       end
     end
     true
@@ -369,7 +369,7 @@ private
       row.each_with_index do |column, _i|
         if column.color != king.color
           return true unless complete_path(where_is_this(column), move).empty?
-          end
+        end
       end
     end
     false
