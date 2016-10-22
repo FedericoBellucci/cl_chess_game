@@ -88,7 +88,6 @@ class ChessBoard
     locations
   end
 
-
   def identify_piece_in(position)
     piece = @board[position[0]][position[1]]
   end
@@ -384,7 +383,6 @@ private
     end
     false
   end
-
 
   def walk_this_way(root, destination) # Breadth first search method
     piece = identify_piece_in(root)
