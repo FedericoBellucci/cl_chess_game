@@ -23,6 +23,7 @@ class ChessGame
       play
     end
   end
+
   def play
     piece_from = ''
     piece_to = ''
@@ -66,6 +67,7 @@ class ChessGame
       players = [Player.new(name2, color2), Player.new(name1, color1)]
     end
   end
+
   def instructions
     puts ' _____________________________________ '
     puts '| Welcome! Chess Game in Command Line |'

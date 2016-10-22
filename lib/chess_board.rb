@@ -299,6 +299,7 @@ private
   def void_castling # This will be
     @blocked = []
   end
+
   def castling(piece_from, piece_to) # all the possible conditions for a possible castling is checked here
     if piece_from == [0, 4]
       if piece_to == [0, 6] && (identify_piece_in([0, 5]) == "\u2610" && identify_piece_in([0, 6]) == "\u2610")
@@ -315,6 +316,7 @@ private
     end
     false
   end
+
   def castle_it(from, to) # moves rook and king into castling
     @board[from[0]][from[1]], @board[to[0]][to[1]] = @board[to[0]][to[1]], @board[from[0]][from[1]]
     if from == [0, 4]
