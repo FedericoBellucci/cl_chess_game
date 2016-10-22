@@ -225,7 +225,7 @@ private
     possible_coordinates
   end
 
-  def bishop_possible_moves(position, counter=8 )
+  def bishop_possible_moves(position, counter = 8 )
     row_u = position[0]
     row_d = position[0]
     indexr = position[1]
@@ -245,7 +245,7 @@ private
     possible_coordinates
   end
 
-  def rook_possible_moves(position, counter=8)
+  def rook_possible_moves(position, counter = 8)
     row_u = position[0]
     row_d = position[0]
     indexr = position[1]
@@ -265,7 +265,7 @@ private
     possible_coordinates
   end
 
-  def queen_possible_moves(position, all=true)
+  def queen_possible_moves(position, all = true)
     if all
       possible_coordinates = rook_possible_moves(position) + bishop_possible_moves(position)
     else
@@ -433,7 +433,7 @@ end
 class Node
   attr_accessor :home, :parent
 
-  def initialize(home, parent=nil)
+  def initialize(home, parent = nil)
     @home = home
     @parent = parent
   end
