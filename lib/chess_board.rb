@@ -36,15 +36,15 @@ class ChessBoard
   end
 
   def show_board
-    puts ""
+    puts ''
     print_guide
     @board.reverse.each_with_index { |row, i| print "#{8 - i} #{row} #{8 - i}\n\r\n" }
     print_guide
   end
 
   def print_guide
-    ("a".."h").each { |x| print "    #{x}" }
-    puts ""
+    ('a'..'h').each { |x| print "    #{x}" }
+    puts ''
   end
 
   def move_piece(turn, from, to)
@@ -52,8 +52,8 @@ class ChessBoard
     piece_from = from.position #function from ChessTools
     piece_to = to.position
     piece = identify_piece_in(piece_from)
-    return false if (turn == "w") && (@black_pieces.include?(piece))
-    return false if (turn == "b") && (@white_pieces.include?(piece))
+    return false if (turn == 'w') && (@black_pieces.include?(piece))
+    return false if (turn == 'b') && (@white_pieces.include?(piece))
     return false if piece == "\u2610"
     if valid_move?(piece_from, piece_to, turn)
       make_move(piece_from, piece_to, turn) unless @promotion == true || @castl == true
@@ -212,13 +212,13 @@ private
     if identify_piece_in(position) == "\u2659"
       possible_coordinates << [row+1, column]
       possible_coordinates << [row+2, column] if row == 1
-      possible_coordinates << [row+1, column+1] if enemy_there?([row+1, column+1], "w")
-      possible_coordinates << [row+1, column-1] if enemy_there?([row+1, column-1], "w") 
+      possible_coordinates << [row+1, column+1] if enemy_there?([row+1, column+1], 'w')
+      possible_coordinates << [row+1, column-1] if enemy_there?([row+1, column-1], 'w') 
     else
       possible_coordinates << [row-1, column]
       possible_coordinates << [row-2, column] if row == 6
-      possible_coordinates << [row-1, column-1] if enemy_there?([row-1, column-1], "b")
-      possible_coordinates << [row-1, column+1] if enemy_there?([row-1, column+1], "b")
+      possible_coordinates << [row-1, column-1] if enemy_there?([row-1, column-1], 'b')
+      possible_coordinates << [row-1, column+1] if enemy_there?([row-1, column+1], 'b')
     end
     possible_coordinates
   end
@@ -285,7 +285,7 @@ private
 
   def choose_promotion(color)
     begin
-      print "Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: "
+      print 'Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: '
       choice = gets.strip
     end until ['q','r','b','k'].include?(choice)
       choice.to_unicode(color)
