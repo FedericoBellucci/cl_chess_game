@@ -84,7 +84,7 @@ class ChessGame
   def save
     print 'Name the file you want to save: '
     file_name = gets.strip.downcase.split(' ').join('_')
-    if File.exists?("bin/#{file_name}.yaml")
+    if File.exist?("bin/#{file_name}.yaml")
       puts 'That file name already exist!'
       save
     else
@@ -100,7 +100,7 @@ class ChessGame
     file_name = gets.strip.downcase
     if file_name == 'new'
       puts 'New Chess Game'
-    elsif File.exists?("bin/#{file_name}.yaml")
+    elsif File.exist?("bin/#{file_name}.yaml")
       saved_game = File.open("bin/#{file_name}.yaml", 'r', &:read)
       game = YAML.load saved_game
       game.board
