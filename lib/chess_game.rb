@@ -39,7 +39,7 @@ class ChessGame
       piece_to = gets.chomp
     end until @hor_guide.include?(piece_to[0]) && @ver_guide.include?(piece_to[1])
     if @board.move_piece(@players[@turn].color, piece_from, piece_to) == true
-      @turn == 0 ? @turn = 1 : @turn = 0
+      @turn = @turn == 0 ? 1 : 0
     else
       puts 'Invalid move'
     end

@@ -259,11 +259,12 @@ class ChessBoard
   end
 
   def queen_possible_moves(position, all = true)
-    if all
-      possible_coordinates = rook_possible_moves(position) + bishop_possible_moves(position)
-    else
-      possible_coordinates = rook_possible_moves(position, 1) + bishop_possible_moves(position, 1)
-    end
+    possible_coordinates =
+      if all
+        rook_possible_moves(position) + bishop_possible_moves(position)
+      else
+        rook_possible_moves(position, 1) + bishop_possible_moves(position, 1)
+      end
     possible_coordinates
   end
 
@@ -330,11 +331,7 @@ class ChessBoard
   end
 
   def call_checkmate?(enemy, king)
-    if noone_can_help?(enemy, king) && king_cannot_move(king)
-      @checkmate = true
-    else
-      @checkmate = false
-    end
+    @checkmate = noone_can_help?(enemy, king) && king_cannot_move(king)
   end
 
   def noone_can_help?(enemy, king_location) # checks if a friendly piece can move in the direction of the enemy threat
