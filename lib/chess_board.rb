@@ -140,11 +140,11 @@ private
 
     when "\u2659", "\u265f" # TODO: refactor into another function
       if pawn_possible_moves(piece_from).include?(piece_to)
-        if (piece == "\u2659" && piece_to[0] == 7)
+        if piece == "\u2659" && piece_to[0] == 7
           @promotion = true
           replace = choose_promotion('w')
           promotion(piece_from, piece_to, replace)
-        elsif (piece == "\u265f" && piece_to[0] == 0)
+        elsif piece == "\u265f" && piece_to[0] == 0
           @promotion = true
           replace = choose_promotion('b')
           promotion(piece_from, piece_to, "\u265b")
