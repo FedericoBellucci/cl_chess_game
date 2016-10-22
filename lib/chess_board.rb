@@ -287,7 +287,7 @@ private
     begin
       print 'Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: '
       choice = gets.strip
-    end until ['q', 'r', 'b', 'k'].include?(choice)
+    end until %w(q r b k).include?(choice)
       choice.to_unicode(color)
   end
 
