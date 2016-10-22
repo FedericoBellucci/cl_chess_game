@@ -39,27 +39,27 @@ module ChessTools
     end
   end
 
- def enemy_king(color)
-   piece = self.ord
-   case piece
-   when 9812
-     if color == 'w'
-       return true
-     end
-   when 9818
-     if color == 'b'
-       return true
-     end
-   end
-   false
- end
+  def enemy_king(color)
+    piece = self.ord
+    case piece
+    when 9812
+      if color == 'w'
+        return true
+      end
+    when 9818
+      if color == 'b'
+        return true
+      end
+    end
+    false
+  end
 
- def color
-   case self.ord
-   when 9812, 9813, 9814, 9815, 9816, 9817
-     return 'w'
-   when 9818, 9819, 9820, 9821, 9822, 9823
-     return 'b'
-   end
- end
+  def color
+    case self.ord
+    when 9812, 9813, 9814, 9815, 9816, 9817
+      return 'w'
+    when 9818, 9819, 9820, 9821, 9822, 9823
+      return 'b'
+    end
+  end
 end

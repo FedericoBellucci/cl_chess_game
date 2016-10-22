@@ -83,7 +83,7 @@ class ChessBoard
         if column == piece
         locations = [num, i]
         end } }
-      locations
+    locations
   end
 
 
@@ -238,7 +238,7 @@ private
       possible_coordinates << [row_u, indexl] unless row_u > 7 || indexl < 0
       possible_coordinates << [row_d, indexr] unless row_d < 0 || indexr > 7
       possible_coordinates << [row_d, indexl] unless row_d < 0 || indexl < 0
-       counter -= 1
+      counter -= 1
     end
     possible_coordinates
   end
@@ -288,7 +288,7 @@ private
       print 'Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: '
       choice = gets.strip
     end until %w(q r b k).include?(choice)
-      choice.to_unicode(color)
+    choice.to_unicode(color)
   end
 
   def promotion(from, to, replace_with)
@@ -313,7 +313,7 @@ private
           return true if identify_piece_in([7, 0]) == "\u265c" && !@blocked.include?([7, 0])
         end
     end
-      false
+    false
   end
   def castle_it(from, to) # moves rook and king into castling
     @board[from[0]][from[1]], @board[to[0]][to[1]] = @board[to[0]][to[1]], @board[from[0]][from[1]]
@@ -396,7 +396,7 @@ private
         current = current.parent
         end
         path.reverse! # Reverses the array to show root as first one and destination as last one.
-         found = true
+        found = true
       end
     end until found == true
     path

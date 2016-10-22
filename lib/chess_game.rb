@@ -55,7 +55,7 @@ class ChessGame
       color1 = gets.downcase.strip
     end until color1 == 'b' || color1 == 'w'
 
-     print "\nName of the second player: "
+    print "\nName of the second player: "
     name2 = gets.strip
     if color1 == 'w'
       color2 = 'b'
