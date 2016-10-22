@@ -83,7 +83,7 @@ class ChessBoard
         if column == piece
         locations = [num, i]
         end } }
-      return locations
+      locations
   end
 
 
@@ -151,7 +151,7 @@ private
         directions = pawn_possible_moves(piece_from)
       end
     end
-    return directions
+    directions
   end
 
   def valid_move?(piece_from, piece_to, turn)
@@ -169,7 +169,7 @@ private
     unless path.empty? || path.size < 2
       return true unless piece_blocking?(path, turn)
     end
-    return false
+    false
   end
 
   def piece_blocking?(path, turn) #checks for friendly blocking across the path
@@ -180,7 +180,7 @@ private
     else
       return true if @black_pieces.include?(square)
     end
-    return false
+    false
   end
 
   def enemy_there?(destination, turn)
@@ -192,7 +192,7 @@ private
       @checkmate = true if space == @white_pieces.last
       return true if @white_pieces.include?(space)
     end
-    return false
+    false
   end
 
   def knight_possible_moves(position)
@@ -240,7 +240,7 @@ private
       possible_coordinates << [row_d, indexl] unless row_d < 0 || indexl < 0
        counter -= 1
     end
-    return possible_coordinates
+    possible_coordinates
   end
 
   def rook_possible_moves(position, counter=8)
@@ -313,7 +313,7 @@ private
           return true if identify_piece_in([7, 0]) == "\u265c" && !@blocked.include?([7, 0])
         end
     end
-      return false
+      false
   end
   def castle_it(from, to) #moves rook and king into castling
     @board[from[0]][from[1]], @board[to[0]][to[1]] = @board[to[0]][to[1]], @board[from[0]][from[1]]
@@ -351,7 +351,7 @@ private
               return false
             end }
         end } }
-    return true
+    true
   end
 
   def king_cannot_move(location)
@@ -361,7 +361,7 @@ private
     moves.each_with_index { |x, i| invalid_moves += 1 unless valid_move?(location, x, king.color) }
     print moves
     return true if invalid_moves == moves.size
-    return false
+    false
   end
 
   def found_enemy(move, king) #checks if at the possible move there is a threat
@@ -373,7 +373,7 @@ private
               return true
             end
           end } }
-    return false
+    false
   end
 
 
@@ -399,7 +399,7 @@ private
          found = true
       end
     end until found == true
-    return path
+    path
   end
 
   def possible_moves(position, piece)

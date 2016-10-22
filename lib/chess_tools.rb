@@ -12,29 +12,29 @@ module ChessTools
     case self
     when 'r'
       if color == 'w'
-        return "\u2656"
+        "\u2656"
       else
-        return "\u265c"
+        "\u265c"
       end
     when 'b'
       if color == 'w'
-        return "\u2657"
+        "\u2657"
       else
-        return "\u265d"
+        "\u265d"
       end
 
     when 'q'
       if color == 'w'
-        return  "\u2655"
+        "\u2655"
       else
-        return "\u265b"
+        "\u265b"
       end
 
     when 'k'
       if color == 'w'
-        return "\u2658"
+        "\u2658"
       else
-        return "\u265e"
+        "\u265e"
       end
     end
   end
@@ -51,7 +51,7 @@ module ChessTools
        return true
      end
    end
-   return false
+   false
  end
 
  def color
