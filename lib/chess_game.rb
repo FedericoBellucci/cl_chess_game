@@ -4,7 +4,7 @@ require 'yaml'
 
 class ChessGame
   def initialize
-    load if !Dir.glob('bin/*').empty?
+    load unless Dir.glob('bin/*').empty?
     @players = whos_playing?
     @board = ChessBoard.new
     @turn = 0
