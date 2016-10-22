@@ -9,7 +9,7 @@ describe ChessBoard do
   describe '#move_piece' do
     context 'moving knight from [b1] to [c3], c3 should be knight b1 should be empty square' do
       before do
-        chess.move_piece('w' , 'b1', 'c3')
+        chess.move_piece('w', 'b1', 'c3')
       end
       it { expect(chess.board[2][2]).to eql("\u2658") }
       it { expect(chess.board[0][1]).to eql("\u2610") }
