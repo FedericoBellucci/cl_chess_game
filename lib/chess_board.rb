@@ -251,14 +251,14 @@ private
     possible_coordinates = []
     while counter > 0
       row_u += 1
-    row_d -= 1
-    indexr += 1
-    indexl -= 1
-    possible_coordinates << [position[0], indexr] unless indexr > 7
-    possible_coordinates << [position[0], indexl] unless indexl < 0
-    possible_coordinates << [row_d, position[1]] unless row_d < 0
-    possible_coordinates << [row_u, position[1]] unless row_u > 7
-    counter -= 1
+      row_d -= 1
+      indexr += 1
+      indexl -= 1
+      possible_coordinates << [position[0], indexr] unless indexr > 7
+      possible_coordinates << [position[0], indexl] unless indexl < 0
+      possible_coordinates << [row_d, position[1]] unless row_d < 0
+      possible_coordinates << [row_u, position[1]] unless row_u > 7
+      counter -= 1
     end
     possible_coordinates
   end
@@ -395,7 +395,7 @@ private
         # Adds up the chain to obtain the full path
         until current.parent.nil?
           path << current.parent.home
-        current = current.parent
+          current = current.parent
         end
         path.reverse! # Reverses the array to show root as first one and destination as last one.
         found = true
