@@ -5,7 +5,7 @@ class ChessBoard
   attr_reader :board, :check, :checkmate
 
   def initialize			#pawn, rook, knight, bishop, queen, king
-    @white_pieces = ["\u2659","\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
+    @white_pieces = ["\u2659", "\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
     @black_pieces = ["\u265f", "\u265c", "\u265e", "\u265d", "\u265b", "\u265a"]
     @pieces = [@white_pieces, @black_pieces]
     @board = populate_board
@@ -196,11 +196,11 @@ private
   end
 
   def knight_possible_moves(position)
-    directions = [[-1, 1],[-2, 2]] #2 pairs of numbers that make up the combinations of the way knight moves.
+    directions = [[-1, 1], [-2, 2]] #2 pairs of numbers that make up the combinations of the way knight moves.
     moves = []
     possible_coordinates = []
-    directions[0].each { |i| directions[1].each{|j| moves << [position[0]+i,position[1]+j] }} #Generates the first 4 combinations
-    directions[1].each { |j| directions[0].each{|i| moves << [position[0]+j,position[1]+i] }} #Generates the remaining 4 combination
+    directions[0].each { |i| directions[1].each{|j| moves << [position[0]+i, position[1]+j] }} #Generates the first 4 combinations
+    directions[1].each { |j| directions[0].each{|i| moves << [position[0]+j, position[1]+i] }} #Generates the remaining 4 combination
     moves.each { |x| possible_coordinates << x unless (x[0] < 0 || x[1] < 0) || (x[0] > 7 || x[1] > 7) } #Discards the moves that go off the board.
     possible_coordinates
   end
@@ -287,7 +287,7 @@ private
     begin
       print 'Choose a piece [q]ueen, [r]ook, [b]ishop, [k]night: '
       choice = gets.strip
-    end until ['q','r','b','k'].include?(choice)
+    end until ['q', 'r', 'b', 'k'].include?(choice)
       choice.to_unicode(color)
   end
 
@@ -301,16 +301,16 @@ private
   end
   def castling(piece_from, piece_to) # all the possible conditions for a possible castling is checked here
     if piece_from == [0, 4]
-        if piece_to == [0, 6] && (identify_piece_in([0,5]) == "\u2610" && identify_piece_in([0,6]) == "\u2610")
-          return true if identify_piece_in([0,7]) == "\u2656" && !@blocked.include?([0, 7])
-        elsif (piece_to == [0, 2] && identify_piece_in([0,1]) == "\u2610") && (identify_piece_in([0,3]) == "\u2610" && identify_piece_in([0,2]) == "\u2610")
-          return true if identify_piece_in([0,0]) == "\u2656" && !@blocked.include?([0, 0])
+        if piece_to == [0, 6] && (identify_piece_in([0, 5]) == "\u2610" && identify_piece_in([0, 6]) == "\u2610")
+          return true if identify_piece_in([0, 7]) == "\u2656" && !@blocked.include?([0, 7])
+        elsif (piece_to == [0, 2] && identify_piece_in([0, 1]) == "\u2610") && (identify_piece_in([0, 3]) == "\u2610" && identify_piece_in([0, 2]) == "\u2610")
+          return true if identify_piece_in([0, 0]) == "\u2656" && !@blocked.include?([0, 0])
         end
     elsif piece_from == [7, 4]
-        if piece_to == [7, 6] && (identify_piece_in([7,5]) == "\u2610" && identify_piece_in([7,6]) == "\u2610")
-          return true if identify_piece_in([7,7]) == "\u265c" && !@blocked.include?([7, 7])
-        elsif (piece_to == [7, 2] && identify_piece_in([7,1]) == "\u2610") && (identify_piece_in([7,3]) == "\u2610" && identify_piece_in([7,2]) == "\u2610")
-          return true if identify_piece_in([7,0]) == "\u265c" && !@blocked.include?([7, 0])
+        if piece_to == [7, 6] && (identify_piece_in([7, 5]) == "\u2610" && identify_piece_in([7, 6]) == "\u2610")
+          return true if identify_piece_in([7, 7]) == "\u265c" && !@blocked.include?([7, 7])
+        elsif (piece_to == [7, 2] && identify_piece_in([7, 1]) == "\u2610") && (identify_piece_in([7, 3]) == "\u2610" && identify_piece_in([7, 2]) == "\u2610")
+          return true if identify_piece_in([7, 0]) == "\u265c" && !@blocked.include?([7, 0])
         end
     end
       return false

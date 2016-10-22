@@ -9,7 +9,7 @@ describe ChessBoard do
   describe '#move_piece' do
     context 'moving knight from [b1] to [c3], c3 should be knight b1 should be empty square' do
       before do
-        chess.move_piece('w' ,'b1', 'c3')
+        chess.move_piece('w' , 'b1', 'c3')
       end
       it { expect(chess.board[2][2]).to eql("\u2658") }
       it { expect(chess.board[0][1]).to eql("\u2610") }
@@ -37,7 +37,7 @@ describe ChessBoard do
 
   describe '#where_is_this' do
     context 'Given a unicode it returns the coordinates of that piece in the board' do
-      it { expect(chess.where_is_this("\u2654")).to eql([0,4]) }
+      it { expect(chess.where_is_this("\u2654")).to eql([0, 4]) }
     end
   end
 end
