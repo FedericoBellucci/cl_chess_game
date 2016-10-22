@@ -82,7 +82,9 @@ class ChessBoard
       row.each_with_index { |column, i|
         if column == piece
           locations = [num, i]
-        end } }
+        end 
+      } 
+    }
     locations
   end
 
@@ -351,8 +353,11 @@ private
         enemy_path.each { |x|
           if valid_move?([num, i], x, king.color)
             return false
-          end }
-        end } }
+          end 
+        }
+        end 
+    } 
+    }
     true
   end
 
@@ -374,7 +379,9 @@ private
           unless complete_path(where_is_this(column), move).empty?
             return true
           end
-          end } }
+          end 
+      } 
+    }
     false
   end
 
