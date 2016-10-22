@@ -95,7 +95,7 @@ class ChessGame
 
   def load
     puts "You have saved games, choose from the list to load a game or type 'new' for a new game."
-    Dir.entries('bin').each { |f| puts f.split('.yaml'); puts ''}
+    Dir.entries('bin').each { |f| puts f.split('.yaml'); puts '' }
     file_name = gets.strip.downcase
     if file_name == 'new'
       puts 'New Chess Game'

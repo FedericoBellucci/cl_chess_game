@@ -18,11 +18,11 @@ describe ChessBoard do
       before do
         chess.move_piece('b', 'a7', 'a5')
       end
-      it { expect(chess.board[4][0]).to eql("\u265f")}
-      it { expect(chess.board[6][0]).to eql("\u2610")}
+      it { expect(chess.board[4][0]).to eql("\u265f") }
+      it { expect(chess.board[6][0]).to eql("\u2610") }
     end
     context 'moving rook from [a1] to [a3] returns false' do
-      it {expect(chess.move_piece('w', 'a1', 'a3')).to be false }
+      it { expect(chess.move_piece('w', 'a1', 'a3')).to be false }
     end
     context 'returns false if white turns tries to move black piece' do
       it { expect(chess.move_piece('w', 'a7', 'a5')).to be false }
@@ -31,7 +31,7 @@ describe ChessBoard do
       it { expect(chess.move_piece('b', 'a2', 'a3')).to be false }
     end
     context 'returns false if space requested is empty' do
-      it { expect(chess.move_piece('w', 'a4', 'a5')).to be false}
+      it { expect(chess.move_piece('w', 'a4', 'a5')).to be false }
     end
   end
 
