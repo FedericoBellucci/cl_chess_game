@@ -9,5 +9,3 @@ describe Player do
     it { expect(player.color).to eql("white") }
   end
 end
-
-

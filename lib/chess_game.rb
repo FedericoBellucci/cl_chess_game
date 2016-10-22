@@ -110,9 +110,3 @@ class ChessGame
   end
 end
 ChessGame.new
-
-
-
-
-
-

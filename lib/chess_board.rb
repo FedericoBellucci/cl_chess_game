@@ -429,10 +429,3 @@ class Node
     @parent = parent
   end
 end
-
-
-
-
-
-
-

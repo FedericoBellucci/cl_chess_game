@@ -63,8 +63,3 @@ module ChessTools
    end
  end
 end
-
-
-
-
-
