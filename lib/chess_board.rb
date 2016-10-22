@@ -52,8 +52,8 @@ class ChessBoard
     piece_from = from.position # function from ChessTools
     piece_to = to.position
     piece = identify_piece_in(piece_from)
-    return false if (turn == 'w') && (@black_pieces.include?(piece))
-    return false if (turn == 'b') && (@white_pieces.include?(piece))
+    return false if (turn == 'w') && @black_pieces.include?(piece)
+    return false if (turn == 'b') && @white_pieces.include?(piece)
     return false if piece == "\u2610"
     if valid_move?(piece_from, piece_to, turn)
       make_move(piece_from, piece_to, turn) unless @promotion == true || @castl == true
