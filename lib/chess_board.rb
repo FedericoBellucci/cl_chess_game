@@ -25,14 +25,14 @@ class ChessBoard
               Array.new(8, "\u2610"), # row 6
               ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]]					# row 7
 
-    @board.each_with_index { |row, i|
+    @board.each_with_index do |row, i|
       case i
       when 1
         (0...row.size).each { |i| row[i] = "\u2659" } # Populate white pawns
       when 6
         (0...row.size).each { |i| row[i] = "\u265f" } # Populate black pawns
       end
-    }
+    end
   end
 
   def show_board
@@ -78,13 +78,13 @@ class ChessBoard
 
   def where_is_this(piece) # giving a unicode returns its location in the board(for king mainly)
     locations = []
-    @board.each_with_index { |row, num|
-      row.each_with_index { |column, i|
+    @board.each_with_index do |row, num|
+      row.each_with_index do |column, i|
         if column == piece
           locations = [num, i]
         end 
-      } 
-    }
+      end 
+    end
     locations
   end
 
@@ -348,16 +348,16 @@ private
     enemy_path = complete_path(enemy, king_location)
     king = identify_piece_in(king_location)
 
-    @board.each_with_index { |row, num| row.each_with_index { |column, i|
+    @board.each_with_index do |row, num| row.each_with_index do |column, i|
       if column.color == king.color && column != king
-        enemy_path.each { |x|
+        enemy_path.each do |x|
           if valid_move?([num, i], x, king.color)
             return false
           end 
-        }
+        end
         end 
-    } 
-    }
+    end 
+    end
     true
   end
 
@@ -373,15 +373,15 @@ private
 
   def found_enemy(move, king) # checks if at the possible move there is a threat
     king = identify_piece_in(king)
-    @board.each_with_index { |row, _num|
-      row.each_with_index { |column, _i|
+    @board.each_with_index do |row, _num|
+      row.each_with_index do |column, _i|
         if column.color != king.color
           unless complete_path(where_is_this(column), move).empty?
             return true
           end
           end 
-      } 
-    }
+      end 
+    end
     false
   end
 
