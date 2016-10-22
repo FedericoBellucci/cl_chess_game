@@ -3,7 +3,6 @@ require_relative 'chess_board'
 require 'yaml'
 
 class ChessGame
-
   def initialize
     load if Dir.glob('bin/*').size > 0
     @players = whos_playing?
