@@ -43,13 +43,9 @@ module ChessTools
     piece = self.ord
     case piece
     when 9812
-      if color == 'w'
-        return true
-      end
+      return true if color == 'w'
     when 9818
-      if color == 'b'
-        return true
-      end
+      return true if color == 'b'
     end
     false
   end

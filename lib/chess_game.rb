@@ -31,9 +31,7 @@ class ChessGame
     begin
       print 'Choose the piece you wish to move: '
       piece_from = gets.strip
-      if piece_from == 'save'
-        save
-      end
+      save if piece_from == 'save'
     end until @hor_guide.include?(piece_from[0]) && @ver_guide.include?(piece_from[1])
 
     begin

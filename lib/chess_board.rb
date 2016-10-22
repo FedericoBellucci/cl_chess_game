@@ -80,9 +80,7 @@ class ChessBoard
     locations = []
     @board.each_with_index do |row, num|
       row.each_with_index do |column, i|
-        if column == piece
-          locations = [num, i]
-        end
+        locations = [num, i] if column == piece
       end
     end
     locations
@@ -159,13 +157,9 @@ private
     path = complete_path(piece_from, piece_to)
     return true if @castl == true
     if identify_piece_in(piece_from) == @pieces[0].last && !path.empty?
-      if found_enemy(piece_to, piece_from)
-        path = []
-      end
+      path = [] if found_enemy(piece_to, piece_from)
     elsif identify_piece_in(piece_from) == @pieces[1].last && !path.empty?
-      if found_enemy(piece_to, piece_from)
-        path = []
-      end
+      path = [] if found_enemy(piece_to, piece_from)
     end
     unless path.empty? || path.size < 2
       return true unless piece_blocking?(path, turn)
@@ -350,9 +344,7 @@ private
     @board.each_with_index do |row, num| row.each_with_index do |column, i|
       if column.color == king.color && column != king
         enemy_path.each do |x|
-          if valid_move?([num, i], x, king.color)
-            return false
-          end
+          return false if valid_move?([num, i], x, king.color)
         end
         end
     end
@@ -375,9 +367,7 @@ private
     @board.each_with_index do |row, _num|
       row.each_with_index do |column, _i|
         if column.color != king.color
-          unless complete_path(where_is_this(column), move).empty?
-            return true
-          end
+          return true unless complete_path(where_is_this(column), move).empty?
           end
       end
     end
