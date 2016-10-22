@@ -2,7 +2,7 @@
 gem 'rspec', '~>2'
 require 'rspec/core/rake_task'
 
-task :default => :spec
+task default: :spec
 
 desc 'run tests for this lab'
 RSpec::Core::RakeTask.new do |task|
