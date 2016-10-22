@@ -4,7 +4,7 @@ include ChessTools
 class ChessBoard
   attr_reader :board, :check, :checkmate
 
-  def initialize			# pawn, rook, knight, bishop, queen, king
+  def initialize	# pawn, rook, knight, bishop, queen, king
     @white_pieces = ["\u2659", "\u2656", "\u2658", "\u2657", "\u2655", "\u2654"]
     @black_pieces = ["\u265f", "\u265c", "\u265e", "\u265d", "\u265b", "\u265a"]
     @pieces = [@white_pieces, @black_pieces]
@@ -16,14 +16,14 @@ class ChessBoard
   end
 
   def populate_board
-    @board = [["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2657", "\u2658", "\u2656"], 					# row 0
+    @board = [["\u2656", "\u2658", "\u2657", "\u2655", "\u2654", "\u2657", "\u2658", "\u2656"],	# row 0
               Array.new(8, "\u2610"), # row 1
               Array.new(8, "\u2610"), # row 2
               Array.new(8, "\u2610"), # row 3
               Array.new(8, "\u2610"), # row 4
               Array.new(8, "\u2610"), # row 5
               Array.new(8, "\u2610"), # row 6
-              ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]]					# row 7
+              ["\u265c", "\u265e", "\u265d", "\u265b", "\u265a", "\u265d", "\u265e", "\u265c"]]	# row 7
 
     @board.each_with_index do |row, i|
       case i
