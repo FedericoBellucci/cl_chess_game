@@ -343,11 +343,11 @@ private
 
     @board.each_with_index do |row, num| 
       row.each_with_index do |column, i|
-      if column.color == king.color && column != king
-        enemy_path.each do |x|
-          return false if valid_move?([num, i], x, king.color)
-        end
-        end
+        if column.color == king.color && column != king
+          enemy_path.each do |x|
+            return false if valid_move?([num, i], x, king.color)
+          end
+          end
       end
     end
     true
