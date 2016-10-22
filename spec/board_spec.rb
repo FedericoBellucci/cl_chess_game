@@ -4,7 +4,7 @@ describe ChessBoard do
   let(:chess) { ChessBoard.new }
 
   it { expect(chess.board).to be_kind_of(Array) }
-  it { expect{ chess.show_board }.to output.to_stdout }
+  it { expect { chess.show_board }.to output.to_stdout }
 
   describe '#move_piece' do
     context 'moving knight from [b1] to [c3], c3 should be knight b1 should be empty square' do
