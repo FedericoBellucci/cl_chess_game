@@ -91,7 +91,7 @@ class ChessBoard
   end
 # TODO: implement castling
 
-private
+  private
 
   def make_move(from, to, turn) # makes the moves of the piece in the board
     if enemy_there?(to, turn)
