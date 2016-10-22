@@ -225,7 +225,7 @@ private
     possible_coordinates
   end
 
-  def bishop_possible_moves(position, counter = 8 )
+  def bishop_possible_moves(position, counter = 8)
     row_u = position[0]
     row_d = position[0]
     indexr = position[1]
