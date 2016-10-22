@@ -348,7 +348,7 @@ private
           return false if valid_move?([num, i], x, king.color)
         end
         end
-    end
+      end
     end
     true
   end
