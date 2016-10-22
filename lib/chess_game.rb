@@ -89,7 +89,7 @@ class ChessGame
       save
     else
       saving = File.open("bin/#{file_name}.yaml", 'w')
-      saving.write(YAML::dump(self))
+      saving.write(YAML.dump(self))
       exit
     end
   end
