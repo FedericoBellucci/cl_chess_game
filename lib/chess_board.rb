@@ -360,7 +360,7 @@ private
     king = identify_piece_in(location)
     moves = king_possible_moves(location)
     invalid_moves = 0
-    moves.each_with_index { |x, i| invalid_moves += 1 unless valid_move?(location, x, king.color) }
+    moves.each_with_index { |x, _i| invalid_moves += 1 unless valid_move?(location, x, king.color) }
     print moves
     return true if invalid_moves == moves.size
     false
@@ -368,8 +368,8 @@ private
 
   def found_enemy(move, king) # checks if at the possible move there is a threat
     king = identify_piece_in(king)
-    @board.each_with_index { |row, num|
-      row.each_with_index { |column, i|
+    @board.each_with_index { |row, _num|
+      row.each_with_index { |column, _i|
         if column.color != king.color
           unless complete_path(where_is_this(column), move).empty?
             return true
